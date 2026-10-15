@@ -793,9 +793,14 @@ setVis(DEF,true);fitVisible();render();
     pathOptions:{color:"#0E0E0E",weight:2.5,fillColor:"#2BB673",fillOpacity:.35}});
   
   var DRAWN=L.featureGroup().addTo(map),MEAS=L.featureGroup().addTo(map),NEW=[],cur=null,mode=null,tip=null;
-  function geoArea(ll){var R=6378137,a=0,n=ll.length;if(n<3)return 0;
-    for(var k=0;k<n;k++){var p1=ll[k],p2=ll[(k+1)%n],r=Math.PI/180;a+=(p2.lng-p1.lng)*r*(2+Math.sin(p1.lat*r)+Math.sin(p2.lat*r))}
-    return Math.abs(a*R*R/2)}
+  /* WGS84 -> UTM zone 47N (EPSG:32647), same grid as the e-PP source data */
+  function utm(lat,lon){var A=6378137,F=1/298.257223563,k0=.9996,e2=F*(2-F),ep2=e2/(1-e2),r=Math.PI/180,
+    ph=lat*r,l0=99*r,N=A/Math.sqrt(1-e2*Math.sin(ph)*Math.sin(ph)),T=Math.tan(ph)*Math.tan(ph),C=ep2*Math.cos(ph)*Math.cos(ph),Aa=Math.cos(ph)*(lon*r-l0),
+    M=A*((1-e2/4-3*e2*e2/64-5*e2*e2*e2/256)*ph-(3*e2/8+3*e2*e2/32+45*e2*e2*e2/1024)*Math.sin(2*ph)+(15*e2*e2/256+45*e2*e2*e2/1024)*Math.sin(4*ph)-(35*e2*e2*e2/3072)*Math.sin(6*ph));
+    return[500000+k0*N*(Aa+(1-T+C)*Math.pow(Aa,3)/6+(5-18*T+T*T+72*C-58*ep2)*Math.pow(Aa,5)/120),
+      k0*(M+N*Math.tan(ph)*(Aa*Aa/2+(5-T+9*C+4*C*C)*Math.pow(Aa,4)/24+(61-58*T+T*T+600*C-330*ep2)*Math.pow(Aa,6)/720))]}
+  function geoArea(ll){var n=ll.length;if(n<3)return 0;var P=ll.map(function(q){return utm(q.lat,q.lng)}),a=0;
+    for(var k=0;k<n;k++){var p1=P[k],p2=P[(k+1)%n];a+=p1[0]*p2[1]-p2[0]*p1[1]}return Math.abs(a/2)}
   function len(ll,closed){var s=0;for(var k=1;k<ll.length;k++)s+=ll[k-1].distanceTo(ll[k]);if(closed&&ll.length>2)s+=ll[ll.length-1].distanceTo(ll[0]);return s}
   function fd(m){return m>=1000?fmt(m/1000,2)+" กม.":fmt(m,1)+" ม."}
   function rai(m2){var w=m2/4,r=Math.floor(w/400),g=Math.floor((w-r*400)/100),v=w-r*400-g*100;return r+"-"+g+"-"+fmt(v,1)}
@@ -846,10 +851,11 @@ setVis(DEF,true);fitVisible();render();
     if(m==="area"){MEAS.addLayer(l);var r=ring(l);l.bindTooltip("พื้นที่ "+fa(geoArea(r))+"<br>เส้นรอบรูป "+fd(len(r,true)),{permanent:true,className:"mtip",direction:"center"}).openTooltip();l.options.pmIgnore=true;stop();return}
     if(m==="draw"){stop();var rec={layer:l,id:NEW.length+1,f:{}};NEW.push(rec);DRAWN.addLayer(l);styleNew(rec);
       l.on("click",function(ev){if(window.__mapTool)return;L.DomEvent.stopPropagation(ev);openForm(rec)});
-      l.on("pm:edit",function(){if(cur===rec)openForm(rec,true)});
+      l.on("pm:edit pm:markerdrag",function(){var r=ring(l),A=geoArea(r);if(cur===rec&&$("nf_m"))$("nf_m").innerHTML=mInfo(r);if(rec.saved&&l.getTooltip())l.setTooltipContent((rec.f.c||"แปลงใหม่ #"+rec.id)+" · "+(rec.f.n||"ยังไม่มีบริษัท")+" · "+rai(A)+" ไร่")});
       openForm(rec)}
   });
 
+  function mInfo(r){return '<dt>พื้นที่</dt><dd>'+fa(geoArea(r))+'</dd><dt>เส้นรอบรูป</dt><dd>'+fd(len(r,true))+'</dd><dt>จำนวนมุม</dt><dd>'+r.length+'</dd>'}
   function styleNew(rec){var on=cur===rec;rec.layer.setStyle({color:on?"#FF3B30":"#0E0E0E",weight:on?3:2,dashArray:rec.saved?null:"6 4",fillColor:"#2BB673",fillOpacity:.38})}
   function estNear(l){var c=l.getBounds().getCenter(),best=-1,bd=1e18;EST.forEach(function(E,k){var d=Math.pow(E.la-c.lat,2)+Math.pow(E.lo-c.lng,2);if(d<bd){bd=d;best=k}});return best}
   function opts(arr,val,none){return(none?'<option value="">'+none+'</option>':'')+arr.map(function(n,k){return'<option value="'+k+'"'+(String(k)===String(val)?" selected":"")+'>'+esc(n)+'</option>'}).join('')}
@@ -861,7 +867,7 @@ setVis(DEF,true);fitVisible();render();
     var a=$("panel");$("sheet").classList.add("has");
     a.innerHTML='<h2>แปลงใหม่ #'+rec.id+(rec.saved?'':' <small class="nd">ยังไม่บันทึก</small>')+'</h2>'+
       '<p class="demo">โหมดทดลอง: แปลงที่วาดเก็บไว้ชั่วคราว จะหายเมื่อรีเฟรชหน้า</p>'+
-      '<dl><dt>พื้นที่</dt><dd>'+fa(A)+'</dd><dt>เส้นรอบรูป</dt><dd>'+fd(P)+'</dd><dt>จำนวนมุม</dt><dd>'+r.length+'</dd></dl>'+
+      '<dl id="nf_m">'+mInfo(r)+'</dl>'+
       '<form id="nf" class="nf" novalidate>'+
       '<label for="nf_e">นิคม</label><select class="tn" id="nf_e">'+opts(EST.map(function(E){return E.n}),f.e)+'</select>'+
       '<label for="nf_c">รหัสแปลง</label><input class="tn" id="nf_c" value="'+esc(f.c||"")+'" placeholder="เช่น G800/3">'+
@@ -880,7 +886,7 @@ setVis(DEF,true);fitVisible();render();
       rec.saved=true;if(rec.layer.pm.enabled())rec.layer.pm.disable();
       rec.layer.unbindTooltip();rec.layer.bindTooltip((f.c||"แปลงใหม่ #"+rec.id)+" · "+(f.n||"ยังไม่มีบริษัท")+" · "+rai(geoArea(ring(rec.layer)))+" ไร่",{sticky:true});
       openForm(rec);var m=document.createElement("p");m.className="ok";m.textContent="บันทึกข้อมูลแปลงแล้ว (ชั่วคราว)";$("nf_cf").appendChild(m)};
-    $("nf_edit").onclick=function(){if(rec.layer.pm.enabled())rec.layer.pm.disable();else rec.layer.pm.enable({snappable:true,allowSelfIntersection:false});openForm(rec,true)};
+    $("nf_edit").onclick=function(){if(rec.layer.pm.enabled())rec.layer.pm.disable();else rec.layer.pm.enable({snappable:true,allowSelfIntersection:false});this.textContent=rec.layer.pm.enabled()?"เสร็จสิ้นการแก้รูปร่าง":"แก้รูปร่างแปลง (ลากจุดมุม)"};
     $("nf_del").onclick=function(){$("nf_cf").innerHTML='<p class="note">ลบแปลงใหม่ #'+rec.id+' ใช่ไหม</p><button class="act g" type="button" id="nf_yes">ยืนยันการลบ</button>';
       $("nf_yes").onclick=function(){if(rec.layer.pm.enabled())rec.layer.pm.disable();DRAWN.removeLayer(rec.layer);rec.gone=true;cur=null;$("sheet").classList.remove("has");panel()}};
   }
