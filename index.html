@@ -34,7 +34,7 @@ aside h2{margin:0 0 6px;font-size:1.15rem}
 dl{margin:10px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px}
 dt{color:var(--mute)}dd{margin:0;word-break:break-word}
 .badge{padding:2px 10px;border-radius:999px;font-size:.82rem;font-weight:600;color:#fff}
-.badge.l{background:var(--leased)}.badge.v{background:var(--vacant);color:#3a2c05}
+.badge.l{background:var(--leased)}.badge.v{background:var(--vacant);color:#3a2c05}.badge.n{background:#AEB4BA;color:#1F2A27}
 label{display:block;font-size:.88rem;color:var(--mute);margin-top:10px}
 input.tn{width:100%;font:inherit;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);margin-top:4px}
 .act{margin-top:10px;width:100%;font:inherit;font-weight:600;padding:9px;border-radius:8px;border:0;cursor:pointer}
@@ -472,7 +472,7 @@ html.authed .gate{display:none}
   <div class="hero"><div class="logo" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg></div>
   <div class="ht"><h1>ข้อมูลผู้ประกอบการภายในนิคมฯ จากระบบ e-PP</h1><div class="sub">แผนที่ผังแปลงและข้อมูลโรงงานในนิคมอุตสาหกรรม</div></div>
   <div class="hs"><span><b id="hn">–</b>นิคม</span><span><b id="hp">–</b>แปลง</span><span><b id="hc">–</b>มีผู้ประกอบการ</span><span class="acct"><strong class="who" id="who">–</strong><button type="button" id="logout">ออกจากระบบ</button></span></div></div>
-  <p>เลือกนิคมได้หลายแห่งหรือทุกแห่งพร้อมกัน · สีม่วงอ่อนคือแปลงที่มีผู้ประกอบการแล้ว (มีชื่อบริษัท หรือมี CID ที่เช่า/ซื้อแล้วแต่ยังไม่เชื่อมข้อมูล) สีส้มอ่อนคือแปลงที่ยังไม่มีผู้ประกอบการ · คลิกป้ายชื่อนิคมเพื่อซูมเข้า · ซูมใกล้ๆ เพื่อดูชื่อบริษัทบนแปลง · เส้นประสีเทาคือโรงงานที่เลิก/หยุดกิจการ สีจางคือแปลงผัง · ใช้ปุ่ม “ตัวกรอง” เลือกชั้นข้อมูล สถานะ และแปลงที่ซ้อนทับ</p>
+  <p>เลือกนิคมได้หลายแห่งหรือทุกแห่งพร้อมกัน · สีม่วงอ่อนคือแปลงที่มีผู้ประกอบการแล้ว (มีชื่อบริษัท หรือมี CID ที่เช่า/ซื้อแล้วแต่ยังไม่เชื่อมข้อมูล) สีส้มอ่อนคือแปลงว่างในพื้นที่อุตสาหกรรม สีเทาคือพื้นที่ส่วนกลาง (พื้นที่สีเขียว สำนักงาน สาธารณูปโภค พาณิชยกรรม) ซึ่งไม่นับเป็นแปลงว่าง · คลิกป้ายชื่อนิคมเพื่อซูมเข้า · ซูมใกล้ๆ เพื่อดูชื่อบริษัทบนแปลง · เส้นประสีเทาคือโรงงานที่เลิก/หยุดกิจการ สีจางคือแปลงผัง · ใช้ปุ่ม “ตัวกรอง” เลือกชั้นข้อมูล สถานะ และแปลงที่ซ้อนทับ</p>
 </header>
 <div class="bar">
   <div class="pick">
@@ -510,7 +510,8 @@ html.authed .gate{display:none}
   </div>
   <button class="chip" data-f="all" aria-pressed="true">ทั้งหมด</button>
   <button class="chip" data-f="l" aria-pressed="false"><span class="dot" style="background:var(--leased)"></span>มีบริษัทแล้ว</button>
-  <button class="chip" data-f="v" aria-pressed="false"><span class="dot" style="background:var(--vacant)"></span>ยังไม่มีบริษัท</button>
+  <button class="chip" data-f="v" aria-pressed="false"><span class="dot" style="background:var(--vacant)"></span>แปลงว่าง</button>
+  <button class="chip" data-f="n" aria-pressed="false"><span class="dot" style="background:#AEB4BA"></span>พื้นที่ส่วนกลาง</button>
   <button class="chip mob" id="multi" aria-pressed="false">เลือกหลายแปลง</button>
   <div class="srch"><input class="search" id="q" type="search" placeholder="ค้นหาชื่อบริษัทหรือรหัสแปลง" aria-label="ค้นหาชื่อบริษัทหรือรหัสแปลง" role="combobox" aria-expanded="false" aria-controls="qr" autocomplete="off"><div class="qr" id="qr" role="listbox" hidden></div></div>
   <span class="stats" id="stats" aria-live="polite"></span>
@@ -530,7 +531,15 @@ var EST=[{"n":"อมตะซิตี้ ชลบุรี","lo":100.99984,"l
 var CIDM={},multi=false,ov={},sov={},sel={},filter="all",vis={},EL={},rev=0,drawn=-1,RANK=null;
 var KEY2="ieat-status-v2",STN=["เปิดดำเนินการ","ยังไม่แจ้งเริ่มกิจการ","หยุดประกอบกิจการ","เลิกกิจการ","ไม่ระบุสถานะ"];
 var F={layer:{1:true,0:true},stat:{0:true,1:true,2:true,3:true,4:true},ovl:"all"};
-var COL={l:"#9575CD",v:"#FF9F43"};
+var COL={l:"#9575CD",v:"#FF9F43",n:"#AEB4BA"};
+/* Vacant = industrial land only (เขตอุตสาหกรรม, อุตสาหกรรมทั่วไป, เขตประกอบการ(ค้า)เสรี, SME zone).
+   Green areas, IEAT offices, utilities, commercial/residential are common areas: never counted as vacant.
+   Parcels with no land-use value are judged by their plot name (e.g. "พื้นที่สีเขียว 3" -> common area). */
+var IND_RE=/อุตสาหกรรม|ประกอบการ(ค้า)?เสรี|วิสาหกิจ/,UNK_RE=/^(ไม่มีข้อมูล|ไม่ระบุ)$/,
+ NON_RE=/สีเขียว|สวน|กันชน|สาธารณูปโภค|ราชการ|สำนักงาน|กนอ|IEAT|Office|บ่อ|ถังสูง|สถานี|โรงไฟฟ้า|บำบัด|บึง|ประปา|ไฟฟ้า|ก๊าซ|เตาเผา|Parking|จอดรถ|ที่พัก|พาณิชย|รถไฟ|ชุมสาย|เทเลคอม|Customs|ศุลกากร|เอื้ออาทร|คลังสินค้า|ถนน|ระบายน้ำ|คลอง|ลำราง|กำจัดขยะ|Road|Utility|Reserve|Public|โรงเรียน|นสล/i,RC={};
+function rent(e,i){var r=RC[e]||(RC[e]=[]);if(r[i]===undefined){var d=EST[e].p[i],u=d[6]>=0?LU[d[6]]:"ไม่ระบุ";
+  r[i]=!NON_RE.test(d[2]||"")&&(IND_RE.test(u)||UNK_RE.test(u))}return r[i]}
+function kind(e,i){return has(e,i)?"l":rent(e,i)?"v":"n"}
 try{ov=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){ov={}}
 try{sov=JSON.parse(localStorage.getItem(KEY2)||"{}")||{}}catch(e){sov={}}
 function $(id){return document.getElementById(id)}
@@ -546,7 +555,7 @@ function pass(e,i){
   if(F.ovl==="none"&&ovn(e,i))return false;
   return true}
 function pri(e,i){if(!lay(e,i))return 0;return[4,3,1,1,2][st(e,i)]}
-function vstate(e,i){if(!pass(e,i))return 0;var l=has(e,i);return(filter!=="all"&&filter!==(l?"l":"v"))?1:2}
+function vstate(e,i){if(!pass(e,i))return 0;return(filter!=="all"&&filter!==kind(e,i))?1:2}
 function applyStyle(l,e,i){l.setStyle(style(e,i));if(l.options)l.options.interactive=vstate(e,i)===2}
 function K(e,i){return e+"_"+i}
 function co(e,i){var k=K(e,i);return k in ov?ov[k]:EST[e].p[i][4]}
@@ -587,9 +596,9 @@ var group=L.layerGroup().addTo(map),lab=L.layerGroup().addTo(map),elab=L.layerGr
 function style(e,i){
   var v=vstate(e,i);if(v===0)return{fill:false,stroke:false};
   var l=has(e,i),on=!!sel[K(e,i)],s=lay(e,i)?st(e,i):-1,closed=s===2||s===3,plan=!lay(e,i);
-  return {fill:true,stroke:true,fillColor:l?COL.l:COL.v,fillOpacity:v===1?.08:(closed?.32:plan?.5:.68),color:on?"#FF3B30":(closed?"#6b6b6b":"#fff"),weight:on?3:.7,opacity:v===1?.2:1,dashArray:closed&&!on?"3 3":null}}
+  return {fill:true,stroke:true,fillColor:COL[kind(e,i)],fillOpacity:v===1?.08:(closed?.32:plan?.5:.68),color:on?"#FF3B30":(closed?"#6b6b6b":"#fff"),weight:on?3:.7,opacity:v===1?.2:1,dashArray:closed&&!on?"3 3":null}}
 function tipText(e,i){var d=EST[e].p[i],m=V().length>1?esc(EST[e].n)+" · ":"";
-  return m+esc(d[2]||"ไม่มีรหัส")+" · "+esc(has(e,i)?dn(e,i):"ยังไม่มีบริษัท")+" · "+(lay(e,i)?STN[st(e,i)]:"ผัง")+" · "+(d[0]/1600).toFixed(1)+" ไร่"+(ovn(e,i)?" · ซ้อนทับ "+ovn(e,i)+" แปลง":"")}
+  return m+esc(d[2]||"ไม่มีรหัส")+" · "+esc(has(e,i)?dn(e,i):rent(e,i)?"ยังไม่มีบริษัท (แปลงว่าง)":"พื้นที่ส่วนกลาง")+" · "+(lay(e,i)?STN[st(e,i)]:"ผัง")+" · "+(d[0]/1600).toFixed(1)+" ไร่"+(ovn(e,i)?" · ซ้อนทับ "+ovn(e,i)+" แปลง":"")}
 function ll(E,flat){var a=[];for(var k=0;k<flat.length;k+=2)a.push([E.la-flat[k+1]*1e-5,E.lo+flat[k]*1e-5]);return a}
 
 function ensure(e){
@@ -642,11 +651,11 @@ function render(prev){
       if(vis[e]&&EL[e]){var l=EL[e].ls[i];applyStyle(l,e,i);if(sel[k])l.bringToFront()}});
     panel();return;
   }
-  var vs=V(),c=0,ca=0,va=0,n=0;
+  var vs=V(),c=0,ca=0,va=0,vn=0,cm=0,n=0;
   vs.forEach(function(e){EL[e].ls.forEach(function(l,i){applyStyle(l,e,i);if(sel[K(e,i)])l.bringToFront();
     if(!pass(e,i))return;var h=has(e,i),a=EST[e].p[i][0];n++;
-    if(h){c++;ca+=a}else va+=a})});
-  $("stats").textContent=vs.length?(vs.length+" นิคม · มีบริษัท "+fmt(c)+" แปลง ("+fmt(ca/1600)+" ไร่) · ยังไม่มีบริษัท "+fmt(n-c)+" แปลง ("+fmt(va/1600)+" ไร่)"):"ยังไม่ได้เลือกนิคม";
+    if(h){c++;ca+=a}else if(rent(e,i)){vn++;va+=a}else cm++})});
+  $("stats").textContent=vs.length?(vs.length+" นิคม · มีบริษัท "+fmt(c)+" แปลง ("+fmt(ca/1600)+" ไร่) · แปลงว่าง "+fmt(vn)+" แปลง ("+fmt(va/1600)+" ไร่) · พื้นที่ส่วนกลาง "+fmt(cm)+" แปลง"):"ยังไม่ได้เลือกนิคม";
   $("pkn").textContent=vs.length;filterUI();
   labels();panel();
   if(drawn!==rev){drawn=rev;dash()}
@@ -658,14 +667,14 @@ function panel(){
   var ids=keys.map(function(k){var s=k.split("_");return[+s[0],+s[1]]});
   var anyF=ids.some(function(x){return lay(x[0],x[1])===1}),e0=ids[0][0],i0=ids[0][1],single=ids.length===1;
   if(single){var l=has(e0,i0),d=EST[e0].p[i0],f=lay(e0,i0)===1;
-    h='<h2>แปลง '+esc(d[2]||"ไม่มีรหัส")+'</h2><span class="badge '+(l?"l":"v")+'">'+(l?(pend(e0,i0)?"มีผู้ประกอบการแล้ว · รอเชื่อมข้อมูล":"มีบริษัทแล้ว"):"ยังไม่มีบริษัท")+'</span> <span class="badge g">'+(f?STN[st(e0,i0)]:"ผัง")+'</span><dl><dt>นิคม</dt><dd>'+esc(EST[e0].n)+'</dd><dt>ชั้นข้อมูล</dt><dd>'+(f?"โรงงาน":"ผัง")+'</dd><dt>พื้นที่</dt><dd>'+(d[0]/1600).toFixed(2)+' ไร่ ('+d[0].toLocaleString()+' ตร.ม.)</dd><dt>บริษัท</dt><dd>'+(l?esc(co(e0,i0)||"ยังไม่ได้เชื่อมข้อมูลจากระบบเดิม"):"–")+'</dd>'+(CIDM[K(e0,i0)]?'<dt>CID</dt><dd>'+esc(CIDM[K(e0,i0)])+'</dd>':'')+''+(d[5]?'<dt>รหัสกิจการ</dt><dd>'+esc(d[5])+'</dd>':'')+(d[10]>=0?'<dt>กลุ่มอุตสาหกรรม</dt><dd>'+esc(IG[d[10]])+'</dd>':'')+(d[11]?'<dt>ประกอบกิจการ</dt><dd>'+esc(d[11])+'</dd>':'')+(d[12]?'<dt>ทะเบียนโรงงาน</dt><dd>'+esc(d[12])+'</dd>':'')+(d[13]?'<dt>เลขนิติบุคคล</dt><dd>'+esc(d[13])+'</dd>':'')+'</dl><label for="tn">ชื่อบริษัท</label><input class="tn" id="tn" value="'+esc(co(e0,i0))+'" placeholder="พิมพ์ชื่อบริษัท"><button class="act l" id="sv">บันทึกชื่อบริษัท</button>'}
+    h='<h2>แปลง '+esc(d[2]||"ไม่มีรหัส")+'</h2><span class="badge '+kind(e0,i0)+'">'+(l?(pend(e0,i0)?"มีผู้ประกอบการแล้ว · รอเชื่อมข้อมูล":"มีบริษัทแล้ว"):rent(e0,i0)?"ยังไม่มีบริษัท · แปลงว่าง":"พื้นที่ส่วนกลาง · ไม่นับเป็นแปลงว่าง")+'</span> <span class="badge g">'+(f?STN[st(e0,i0)]:"ผัง")+'</span><dl><dt>นิคม</dt><dd>'+esc(EST[e0].n)+'</dd><dt>ชั้นข้อมูล</dt><dd>'+(f?"โรงงาน":"ผัง")+'</dd><dt>พื้นที่</dt><dd>'+(d[0]/1600).toFixed(2)+' ไร่ ('+d[0].toLocaleString()+' ตร.ม.)</dd><dt>บริษัท</dt><dd>'+(l?esc(co(e0,i0)||"ยังไม่ได้เชื่อมข้อมูลจากระบบเดิม"):"–")+'</dd>'+(CIDM[K(e0,i0)]?'<dt>CID</dt><dd>'+esc(CIDM[K(e0,i0)])+'</dd>':'')+''+(d[5]?'<dt>รหัสกิจการ</dt><dd>'+esc(d[5])+'</dd>':'')+(d[10]>=0?'<dt>กลุ่มอุตสาหกรรม</dt><dd>'+esc(IG[d[10]])+'</dd>':'')+(d[11]?'<dt>ประกอบกิจการ</dt><dd>'+esc(d[11])+'</dd>':'')+(d[12]?'<dt>ทะเบียนโรงงาน</dt><dd>'+esc(d[12])+'</dd>':'')+(d[13]?'<dt>เลขนิติบุคคล</dt><dd>'+esc(d[13])+'</dd>':'')+'</dl><label for="tn">ชื่อบริษัท</label><input class="tn" id="tn" value="'+esc(co(e0,i0))+'" placeholder="พิมพ์ชื่อบริษัท"><button class="act l" id="sv">บันทึกชื่อบริษัท</button>'}
   else{var ar=0,es={};ids.forEach(function(x){ar+=EST[x[0]].p[x[1]][0];es[x[0]]=1});
     h='<h2>เลือก '+ids.length+' แปลง</h2><dl><dt>พื้นที่รวม</dt><dd>'+fmt(ar/1600,1)+' ไร่ (นับซ้ำถ้าแปลงซ้อนกัน)</dd><dt>จำนวนนิคม</dt><dd>'+Object.keys(es).length+'</dd></dl><label for="tn">ชื่อบริษัท (ใส่ให้ทุกแปลงที่เลือก)</label><input class="tn" id="tn" placeholder="พิมพ์ชื่อบริษัท"><button class="act l" id="sv">บันทึกชื่อบริษัท</button>'}
   h+='<button class="act v" id="cl">ลบชื่อบริษัท (เป็นแปลงที่ยังไม่มีบริษัท)</button>';
   if(anyF){h+='<label for="ss">สถานะโรงงาน'+(single?'':' (ใช้กับแปลงโรงงานที่เลือก)')+'</label>'+stSel(single?st(e0,i0):4)+'<button class="act g" id="ssv">บันทึกสถานะ</button><button class="small" id="ssr">กลับเป็นค่าจากไฟล์</button>'}
   if(single){var ol=EST[e0].p[i0][7];
     if(ol.length){var it=[];for(var q=0;q<ol.length&&q<24;q+=2){var j=ol[q],pc=ol[q+1],dj=EST[e0].p[j];
-      it.push('<button class="ovi" data-oj="'+j+'"><b>'+esc(dj[2]||"ไม่มีรหัส")+'</b> · '+esc(has(e0,j)?dn(e0,j).slice(0,40):"ยังไม่มีบริษัท")+'<br><small>'+(lay(e0,j)?STN[st(e0,j)]:"ผัง")+' · ซ้อน '+pc+'% ของแปลงที่เล็กกว่า</small></button>')}
+      it.push('<button class="ovi" data-oj="'+j+'"><b>'+esc(dj[2]||"ไม่มีรหัส")+'</b> · '+esc(has(e0,j)?dn(e0,j).slice(0,40):rent(e0,j)?"ยังไม่มีบริษัท":"พื้นที่ส่วนกลาง")+'<br><small>'+(lay(e0,j)?STN[st(e0,j)]:"ผัง")+' · ซ้อน '+pc+'% ของแปลงที่เล็กกว่า</small></button>')}
       h+='<h3 class="oh">แปลงที่ซ้อนทับกับแปลงนี้ ('+ol.length/2+')</h3>'+it.join('')+(ol.length/2>12?'<p class="note">แสดง 12 รายการแรก</p>':'')}}
   a.innerHTML=h;
   $("sv").onclick=function(){var v=$("tn").value.trim();if(!v){alert("กรุณาพิมพ์ชื่อบริษัท");return}ids.forEach(function(x){ov[K(x[0],x[1])]=v});save();render()};
@@ -693,7 +702,7 @@ function ranks(){
 function dash(){
   var vs=V();
   if(!vs.length){$("dash").innerHTML='<h2>ยังไม่ได้เลือกนิคม</h2><p>กดปุ่ม "เลือกนิคม" ด้านบนเพื่อแสดงนิคมบนแผนที่และดูสรุปข้อมูล</p>';return}
-  var n=0,tot=0,ca=0,cn=0,lu={},own={},comp={},bins=[0,0,0,0,0,0],ft={},rows=[],sc=[0,0,0,0,0],nf=0,np=0,no=0,uasum=0,fa=activeFilters()>0;
+  var n=0,tot=0,ca=0,cn=0,vv=0,vva=0,lu={},own={},comp={},bins=[0,0,0,0,0,0],ft={},rows=[],sc=[0,0,0,0,0],nf=0,np=0,no=0,uasum=0,fa=activeFilters()>0;
   vs.forEach(function(e){var P=EST[e].p,r={e:e,n:0,t:0,c:0,cn:0};uasum+=EST[e].ua||0;
     for(var i=0;i<P.length;i++){if(!pass(e,i))continue;var d=P[i],a=d[0],h=has(e,i);r.t+=a;r.n++;
       if(lay(e,i)){sc[st(e,i)]++;nf++}else np++;if(ovn(e,i))no++;
@@ -703,7 +712,7 @@ function dash(){
         if(nm){if(!comp[nm])comp[nm]={a:0,n:0};comp[nm].a+=a;comp[nm].n++}
         var q=a/1600;bins[q<1?0:q<2?1:q<5?2:q<10?3:q<20?4:5]++;
         if(d[5])ft[d[5]]=(ft[d[5]]||0)+1;
-      }else{lu[k].v+=a;lu[k].vn++}
+      }else{lu[k].v+=a;lu[k].vn++;if(rent(e,i)){vv++;vva+=a}}
     }
     n+=r.n;tot+=r.t;ca+=r.c;cn+=r.cn;rows.push(r)});
   var pct=function(x,y){return y?Math.round(x/y*100):0};
@@ -714,7 +723,7 @@ function dash(){
    '<div class="kpi"><span>พื้นที่รวมของแปลง (ไร่)</span><b>'+fmt(tot/1600)+'</b><small>เฉลี่ย '+fmt(n?tot/1600/n:0,1)+' ไร่ต่อแปลง</small><small>'+(fa?'นับซ้ำส่วนที่ซ้อนกัน':'พื้นที่จริงไม่นับซ้ำ '+fmt(uasum/1600)+' ไร่')+'</small></div>'+
    '<div class="kpi"><span>แปลงที่มีบริษัท</span><b>'+fmt(cn)+'</b><small>'+pct(cn,n)+'% ของแปลงทั้งหมด</small></div>'+
    '<div class="kpi"><span>พื้นที่ที่มีบริษัท (ไร่)</span><b>'+fmt(ca/1600)+'</b><small>'+pct(ca,tot)+'% ของพื้นที่รวม</small></div>'+
-   '<div class="kpi"><span>แปลงที่ยังไม่มีบริษัท</span><b>'+fmt(n-cn)+'</b><small>'+fmt((tot-ca)/1600)+' ไร่</small></div></div>';
+   '<div class="kpi"><span>แปลงว่าง (พื้นที่อุตสาหกรรม)</span><b>'+fmt(vv)+'</b><small>'+fmt(vva/1600)+' ไร่</small><small>ไม่นับพื้นที่ส่วนกลาง '+fmt(n-cn-vv)+' แปลง</small></div></div>';
   h+='<div class="dgrid">';
   if(vs.length>1){
     rows.sort(function(x,y){return y.t-x.t});
