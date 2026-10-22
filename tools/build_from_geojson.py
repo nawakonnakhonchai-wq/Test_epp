@@ -1,5 +1,6 @@
 # Usage: python3 tools/build_from_geojson.py <EPP_export.geojson> index.html [--write] [--report out.csv]
-# Without --write it only reports what would change.
+# Without --write it only reports what would change. --write also writes data/factories/<estate index>.json
+# (factory details shown under the map; the page loads one estate's file when a parcel there is clicked).
 """Rebuild the parcel data (var EST / LU / IG) in index.html from a GeoJSON export of the
 EPP_2026_V1 feature layer (ArcGIS Pro: Features To JSON, Output to GeoJSON + Project to WGS_1984).
 
@@ -13,7 +14,7 @@ EPP_2026_V1 feature layer (ArcGIS Pro: Features To JSON, Output to GeoJSON + Pro
   earlier with fill_names_by_cid.py), the current name is kept.
 Needs: pip install shapely pyproj
 """
-import csv, json, re, sys
+import csv, hashlib, json, os, re, sys
 import numpy as np
 from collections import Counter, defaultdict
 from pyproj import Transformer
@@ -29,7 +30,7 @@ PLANS = {'ผัง': 0, 'โรงงาน': 1}
 STATUS = {'เป็นโรงงานที่มีการแจ้งเริ่มกิจการแล้ว': 0, 'เป็นโรงงานยังไม่แจ้งเริ่ม': 1,
           'หยุดประกอบกิจการ': 2, 'เลิกกิจการ': 3}          # anything else -> 4 (ไม่ระบุสถานะ)
 OVERLAP_MIN = 0.20                                         # share of the smaller parcel
-EMPTY = {'', '-', 'None', 'none', 'null'}
+EMPTY = {'', '-', 'None', 'none', 'null', 'n/a', 'N/A'}
 
 
 def txt(v):
@@ -168,8 +169,77 @@ if REPORT:
                         txt(p.get('Name_Parcel_long')), txt(p.get('mercant_name')), p.get('CID'), 'CID รูปแบบไม่ถูกต้อง'])
     print('report ->', REPORT)
 
+# ---- factory details (data/factories/<e>.json): one row per factory parcel on the map, keyed by OBJECTID
+FD_KEYS = ['mid', 'fac', 'typ', 'ftype', 'work', 'land', 'own', 'addr', 'farea', 'rai', 'ngan', 'wa',
+           'stx', 'imp', 'act']
+
+
+def num(v):
+    if v is None or v == '':
+        return None
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return int(f) if f == int(f) else round(f, 2)
+
+
+def addr(p):
+    parts = [txt(p.get('FactoryAddressGeneral'))]
+    for lab, k in (('หมู่ ', 'FactoryAddressMoo'), ('ซ.', 'FactoryAddressSoi'), ('ถ.', 'FactoryAddressRoad'),
+                   ('ต.', 'FactoryAddressTambonName'), ('อ.', 'FactoryAddressDistrictName'),
+                   ('จ.', 'FactoryAddressProvinceName'), ('', 'FactoryAPostCode')):
+        v = txt(p.get(k))
+        if v:
+            parts.append(v if v.startswith(lab.strip('. ')) and lab else lab + v)
+    return ' '.join(x for x in parts if x)
+
+
+def imp_date(v):
+    from email.utils import parsedate_to_datetime
+    v = txt(v)
+    if not v:
+        return None
+    try:
+        return parsedate_to_datetime(v).strftime('%Y-%m-%d')
+    except (TypeError, ValueError):
+        return v[:10]
+
+
+FD = {}
+for e, name in enumerate(est_names):
+    FD[e] = {}
+    for o, f in by_est[name].items():
+        p = f['properties']
+        if txt(p['Measter_Plan']) != 'โรงงาน':
+            continue
+        row = [txt(p.get('mercant_id')), txt(p.get('FactoryID')), txt(p.get('factory_type_no')),
+               txt(p.get('factory_work_desc')),
+               txt(p.get('factory_work_desc_long')) or txt(p.get('factory_work_desc')),
+               txt(p.get('LandAcquisition')), txt(p.get('OwnerType')), addr(p),
+               num(p.get('factory_area_sqmeter')), num(p.get('RAI')), num(p.get('NGAN')), num(p.get('WA')),
+               txt(p.get('cancel_production_status')), imp_date(p.get('import_date')),
+               1 if txt(p.get('Active')).lower() == 'true' else 0]
+        while row and row[-1] in ('', None):
+            row.pop()
+        FD[e][o] = [None if v == '' else v for v in row]
+fd_files = {e: json.dumps({'k': FD_KEYS, 'r': r}, ensure_ascii=False, separators=(',', ':')) for e, r in FD.items()}
+fd_hash = hashlib.md5(''.join(fd_files[e] for e in sorted(fd_files)).encode()).hexdigest()[:10]
+print(f"factory details rows={sum(len(r) for r in FD.values())} files={len(fd_files)} "
+      f"largest={max(len(v.encode()) for v in fd_files.values()) / 1e6:.2f} MB")
+
 if WRITE:
     dump = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
     out = html[:i0] + dump(EST) + html[i1:j0] + dump(LU) + html[j1:k0] + dump(IG) + html[k1:]
+    fd_dir = os.path.join(os.path.dirname(os.path.abspath(html_path)), 'data', 'factories')
+    os.makedirs(fd_dir, exist_ok=True)
+    for fn in os.listdir(fd_dir):
+        if fn.endswith('.json'):
+            os.remove(os.path.join(fd_dir, fn))
+    for e, js in fd_files.items():
+        open(os.path.join(fd_dir, f'{e}.json'), 'w', encoding='utf-8').write(js)
+    print('written', len(fd_files), 'files in', fd_dir)
+    # cache-busting version the page appends when it fetches factory files
+    out = re.sub(r'var FDV="[^"]*"', 'var FDV="' + fd_hash + '"', out)
     open(html_path, 'w', encoding='utf-8').write(out)
     print('written', html_path)
