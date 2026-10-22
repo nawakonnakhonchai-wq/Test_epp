@@ -477,6 +477,165 @@ html.authed .gate{display:none}
   .fdet{padding:0 10px}.fdet h2{font-size:1.2rem}.fdet>.fhd{padding:16px}.fdet .fcard{padding:4px 16px}}
 .r .v small.vx{color:var(--mute);font-weight:400;font-size:.76rem;margin-left:4px}
 .sub2{margin:12px 0 2px;font-size:.8rem;font-weight:600;color:var(--ink)}
+/* ---------- app shell: sidebar + tabs + views ---------- */
+.app{display:grid;grid-template-columns:268px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;background:#F6F6F6;border-right:1px solid #E6E6E6;padding:22px 14px 24px;display:flex;flex-direction:column;gap:2px;z-index:1600}
+.sbrand{display:flex;align-items:center;gap:12px;padding:4px 10px 22px}
+.sbrand .sl{width:40px;height:40px;border-radius:12px;background:#0E0E0E;display:grid;place-items:center;flex:none}
+.sbrand b{display:block;font:700 1.12rem "Inter Tight","Noto Sans Thai",sans-serif;letter-spacing:-.02em;color:#0E0E0E;line-height:1.15}
+.sbrand small{display:block;font-size:.72rem;color:#6A6A6A}
+.sh{margin:18px 10px 6px;font-size:.78rem;font-weight:600;color:#6A6A6A;letter-spacing:.02em}
+.ni{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:14px;background:none;font:inherit;font-size:.95rem;color:#2B2B2B;text-align:left;cursor:pointer;text-decoration:none}
+.ni svg{flex:none;width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ni:hover{background:#ECECEC}
+.ni[aria-current="page"]{background:#fff;color:#0E0E0E;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 16px rgba(0,0,0,.05)}
+.ni .nb{margin-left:auto;font-size:.76rem;font-weight:700;padding:2px 9px;border-radius:999px;background:#FDE7E5;color:#B4271C}
+.ni .chev{margin-left:auto;width:16px;height:16px;opacity:.45}
+.sfoot{margin-top:auto;padding:16px 10px 0;font-size:.74rem;color:#7A7A7A;line-height:1.5}
+.cont{min-width:0}
+.vtabs{display:flex;gap:4px;padding:5px;margin:4px 0 0;background:#EDEDED;border-radius:16px;width:max-content;max-width:100%;overflow-x:auto}
+.vtabs button{display:flex;align-items:center;gap:8px;border:0;background:none;font:inherit;font-size:.92rem;font-weight:600;color:#3A3A3A;padding:9px 18px;border-radius:12px;cursor:pointer;white-space:nowrap}
+.vtabs button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.vtabs button[aria-selected="true"]{background:#0E0E0E;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.tabrow{max-width:1280px;margin:0 auto;padding:6px 20px 4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tabrow .vt{font-size:.85rem;color:#3A3A3A;background:rgba(255,255,255,.85);padding:6px 12px;border-radius:999px}
+.view[hidden]{display:none!important}
+.burger{display:none;position:fixed;top:12px;left:12px;z-index:1700;width:44px;height:44px;border-radius:14px;border:1px solid #E2E2E2;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.12);cursor:pointer;place-items:center}
+.burger svg{width:22px;height:22px;stroke:#0E0E0E;fill:none;stroke-width:2;stroke-linecap:round}
+.scrim{display:none}
+/* generic page used by the new views */
+.pg{max-width:1280px;margin:10px auto 40px;padding:0 20px}
+.pg>h2{font:700 1.6rem "Inter Tight","Noto Sans Thai",sans-serif;letter-spacing:-.03em;margin:8px 0 2px;display:inline-block;background:rgba(255,255,255,.88);padding:4px 14px;border-radius:14px}
+.pg>p.lead{margin:6px 0 14px;font-size:.88rem;color:#2B2B2B}
+.pbox{background:#fff;border-radius:22px;padding:18px 20px;box-shadow:var(--frame,0 1px 3px rgba(0,0,0,.08));margin-bottom:14px}
+.pbox h3{margin:0 0 4px;font-size:1.02rem}
+.pbox .sub{margin:0 0 10px;font-size:.82rem;color:var(--mute)}
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+.tools input{font:inherit;font-size:.9rem;padding:8px 14px;border-radius:999px;border:1px solid #E2E2E2;background:#fff;min-width:240px}
+.tools small{color:#3A3A3A;font-size:.82rem}
+.gt{width:100%;border-collapse:collapse;font-size:.86rem}
+.gt th{position:sticky;top:0;background:#F6F6F6;text-align:left;font-weight:600;color:#3A3A3A;padding:9px 10px;border-bottom:1px solid #E2E2E2;white-space:nowrap}
+.gt th[data-s]{cursor:pointer;user-select:none}.gt th[data-s]:hover{color:#0E0E0E}
+.gt th.on::after{content:" ↓"}.gt th.on.up::after{content:" ↑"}
+.gt td{padding:9px 10px;border-bottom:1px solid #EFEFEF;vertical-align:top}
+.gt td.num,.gt th.num{text-align:right;font-variant-numeric:tabular-nums}
+.gt tbody tr{cursor:pointer}.gt tbody tr:hover td{background:#FAFAFA}
+.gt .pbar{display:block;height:6px;border-radius:9px;background:#0E0E0E;margin-top:5px}
+.scr2{overflow:auto;max-height:70vh;border-radius:12px}
+.qa h3 .qn{display:inline-block;margin-left:8px;font-size:.8rem;font-weight:700;padding:2px 9px;border-radius:999px;background:#FDE7E5;color:#B4271C;vertical-align:2px}
+.qa h3 .qn.ok{background:#E3F4EA;color:#1D6B3F}
+.qa .more{font-size:.8rem;color:var(--mute);margin:8px 0 0}
+.gl dt{font-weight:700;margin-top:14px}.gl dd{margin:4px 0 0;color:#2B2B2B;font-size:.92rem;line-height:1.6}
+@media (max-width:1000px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:0;bottom:0;width:280px;transform:translateX(-105%);transition:transform .22s ease;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+  body.nav-open .side{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:1550}
+  .burger{display:grid}
+  .side{padding-top:70px}
+  header{padding-left:64px!important}
+  .tools input{min-width:0;flex:1}
+}
+/* ==== Green "Task Pro" theme (overrides the layers above) ==== */
+:root{--ink:#17231B;--mute:#6B746D;--line:#E4E8E2;--bg:#EEF1EC;--panel:#fff;--blue:#2E7D32;--sel:#1B5E20;
+--g1:#4C9A2A;--g2:#2E7D32;--g3:#14532D;--gt:#E8F2E1;--gtx:#2E7D32;
+--grad:linear-gradient(135deg,#4C9A2A 0%,#2E7D32 45%,#14532D 100%);
+--frame:0 1px 2px rgba(20,40,20,.05),0 10px 30px rgba(20,40,20,.06)}
+html{background:#EEF1EC}
+body{background:#EEF1EC!important;background-image:none!important;color:var(--ink)}
+/* sidebar */
+.side{background:#fff;border-right:1px solid var(--line)}
+.sbrand .sl{background:var(--grad);border-radius:12px}
+.sbrand b{color:var(--ink)}
+.sh{color:#8A938B;font-weight:600}
+.ni{color:#3B463E}
+.ni:hover{background:#F2F6EF}
+.ni[aria-current="page"]{background:var(--grad);color:#fff;font-weight:600;box-shadow:0 8px 18px rgba(46,125,50,.28)}
+.ni[aria-current="page"] .chev{opacity:.8}
+.sfoot{color:#8A938B}
+/* header */
+.hero{background:#fff;border:0;border-radius:22px;box-shadow:var(--frame)}
+.logo{background:var(--grad);border-radius:14px;box-shadow:0 6px 14px rgba(46,125,50,.3)}
+h1{color:var(--ink);-webkit-text-fill-color:var(--ink);letter-spacing:-.03em}
+.hs span{background:#fff;border:1px solid var(--line);border-radius:16px;color:var(--mute);box-shadow:none}
+.hs b{color:var(--ink)}
+.hs small{color:var(--gtx);opacity:1}
+.hs span:first-child{background:var(--grad);border:0;color:rgba(255,255,255,.8);position:relative;overflow:hidden}
+.hs span:first-child b{color:#fff}
+header>p,header p{color:#46514A;background:#fff;border:1px solid var(--line);border-radius:16px}
+/* tabs, chips, search */
+.vtabs{background:#E3E8E0}
+.vtabs button{color:#46514A}
+.vtabs button[aria-selected="true"]{background:var(--grad);color:#fff;box-shadow:0 8px 18px rgba(46,125,50,.28)}
+.tabrow .vt{background:#fff;color:var(--gtx);border:1px solid var(--line)}
+.chip,.search,select.est{background:#fff;border:1px solid var(--line);box-shadow:0 1px 2px rgba(20,40,20,.04)}
+.chip:hover{border-color:#B9CDB0;background:#F7FAF5}
+.chip[aria-pressed="true"]{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(46,125,50,.28)}
+.search:focus{border-color:var(--g2);outline:none;box-shadow:0 0 0 3px rgba(76,154,42,.18)}
+.stats{background:#fff;color:#2F3A32;border:1px solid var(--line)}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid rgba(76,154,42,.45)!important;outline-offset:2px}
+/* map + panels */
+#map{border:0;border-radius:22px;box-shadow:var(--frame);background:#E7ECE4}
+aside,.kpi,.card,.pbox{background:#fff;border:0;box-shadow:var(--frame)}
+aside{border-radius:22px}
+aside h2{color:var(--ink)}
+aside dt{color:var(--mute)}
+.pp,.qr{border-radius:18px;border:1px solid var(--line);box-shadow:0 20px 50px rgba(20,40,20,.18)}
+.leaflet-bar,.leaflet-control-layers{border:1px solid var(--line)!important;box-shadow:0 6px 18px rgba(20,40,20,.14)!important}
+.leaflet-bar a{color:var(--g3)!important}
+.leaflet-control-layers input{accent-color:var(--g2)}
+.elbl span{background:var(--g3);border-color:var(--g3);color:#fff;box-shadow:0 4px 12px rgba(20,83,45,.35)}
+.mtools button{color:var(--g3)}.mtools button:hover{background:#F2F6EF}.mtools button.on{background:var(--grad);color:#fff}
+.mhint,.leaflet-tooltip.mtip{background:var(--g3)}
+.act.l{background:var(--grad);border:0;box-shadow:0 8px 20px rgba(46,125,50,.28)}
+.act.l::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232E7D32' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M8 7h9v9'/%3E%3C/svg%3E")}
+.act.v,.act.g{border:1px solid var(--line)}
+.act.v::after,.act.g::after{background-color:var(--g2)}
+.ovi,.pa button,.pi button,.xc,#pclose{border:1px solid var(--line)}
+.ovi:hover{border-color:var(--g1);background:#F7FAF5}
+input.tn,select.tn,.pp input[type=search]{background:#F5F8F3;border:1px solid var(--line)}
+.fgo{border-color:var(--g2);color:var(--g2)}
+.fgo:hover{background:#F2F6EF}
+.qi:hover,.qi[aria-selected="true"]{background:#F2F6EF}
+/* "featured" green cards with checker pattern and arrow chip */
+.kpi:first-child,.hs span:first-child{background:var(--grad)!important}
+.kpi:first-child::before,.hs span:first-child::before{content:"";position:absolute;right:0;top:0;width:58%;height:100%;pointer-events:none;
+ background:conic-gradient(rgba(255,255,255,.09) 25%,transparent 0 50%,rgba(255,255,255,.09) 0 75%,transparent 0) top right/34px 34px;
+ -webkit-mask:linear-gradient(225deg,#000 10%,transparent 70%);mask:linear-gradient(225deg,#000 10%,transparent 70%)}
+.kpi{position:relative;overflow:hidden;border-radius:22px}
+.kpi:first-child b{color:#fff}.kpi:first-child span,.kpi:first-child small{color:rgba(255,255,255,.82)!important}
+.kpi span{color:#46514A}
+.kpi b{color:var(--ink)}
+.kpi small{color:var(--gtx)}
+/* dashboard */
+.dash h2,.pg>h2{background:none;padding:0;color:var(--ink);font-size:1.9rem}
+.dash>p,.pg>p.lead{color:#5B665E}
+.card{border-radius:22px}
+.card h3{border-bottom:0;padding-bottom:0;margin-bottom:6px}
+.card h3::before{content:none}
+.card .sub,.pbox .sub{color:var(--mute)}
+.tk{height:10px;background:#EEF3EA;border-radius:999px;box-shadow:none}
+.mb{height:10px;border-radius:999px;background:linear-gradient(90deg,#7CB65A,#2E7D32)}
+.mb.g{background:#B9CBB0}
+.st{background:#EEF3EA}
+.cols>div>i{border-radius:10px 10px 4px 4px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.55) 0 2px,transparent 2px 9px),linear-gradient(180deg,#7CB65A,#2E7D32)}
+.cols>div:hover>i{background:var(--grad)}
+.t th,.gt th{background:#F4F7F2!important;color:#46514A}
+.t tr[data-e]:hover td,.gt tbody tr:hover td{background:#F5F9F2}
+.gt .pbar{background:linear-gradient(90deg,#7CB65A,#2E7D32)}
+#dtip{background:var(--g3);color:#fff}
+.sub2{color:var(--g3)}
+/* factory details */
+.fdet>.fhd,.fids span{background:#fff;box-shadow:var(--frame)}
+.ftabs button[aria-selected="true"]{background:var(--grad);border-color:transparent}
+.ftabs small,.ffoot{background:#fff;border:1px solid var(--line)}
+.fb.s0{background:var(--gt);color:var(--g3)}
+.fb.o{border-color:#CFE0C6;color:var(--g3)}
+.fi small{color:#7A847C}
+.qa h3 .qn.ok{background:var(--gt);color:var(--g3)}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;gap:14px!important}
+.dgrid{gap:16px!important}
+@media (max-width:1000px){.side{background:#fff}}
 </style>
 </head>
 <body>
@@ -502,13 +661,30 @@ html.authed .gate{display:none}
     <p class="gate-foot">สำหรับเจ้าหน้าที่ EMCC · ติดต่อผู้ดูแลระบบเพื่อขอบัญชีผู้ใช้</p>
   </form>
 </div>
+<button class="burger" id="burger" aria-label="เปิดเมนู"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="scrim" id="scrim"></div>
+<div class="app">
+<nav class="side" id="side" aria-label="เมนูหลัก">
+  <div class="sbrand"><span class="sl"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg></span><span><b>e-PP Dashboard</b><small>ผู้ประกอบการในนิคมฯ</small></span></div>
+  <a class="ni" href="#map" data-go="map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg>แผนที่แปลง</a>
+  <div class="sh">วิเคราะห์</div>
+  <a class="ni" href="#overview" data-go="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>ภาพรวม<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a class="ni" href="#estates" data-go="estates"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>ตารางรายนิคม<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a class="ni" href="#operators" data-go="operators"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h11M4 18h6"/></svg>ผู้ประกอบการรายใหญ่<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <div class="sh">ข้อมูล</div>
+  <a class="ni" href="#qa" data-go="qa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>ตรวจข้อมูล<span class="nb" id="nbqa" hidden></span></a>
+  <div class="sh">ช่วยเหลือ</div>
+  <a class="ni" href="#help" data-go="help"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>คำอธิบายตัวชี้วัด</a>
+  <div class="sfoot">ข้อมูลจาก layer EPP_2026_V1 (ArcGIS) · ระบบ e-PP</div>
+</nav>
+<div class="cont">
 <header>
   <div class="hero"><div class="logo" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg></div>
   <div class="ht"><h1>ข้อมูลผู้ประกอบการภายในนิคมฯ <span style="white-space:nowrap">จากระบบ e-PP</span></h1><div class="sub">แผนที่ผังแปลงและข้อมูลโรงงานในนิคมอุตสาหกรรม</div></div>
   <div class="hs"><span><b id="hn">–</b>นิคม</span><span><b id="hp">–</b>แปลงทั้งหมด<small id="hps1"></small><small id="hps2"></small></span><span><b id="hc">–</b>มีผู้ประกอบการ<small>โรงงานที่มี CID</small></span><span class="acct"><strong class="who" id="who">–</strong><button type="button" id="logout">ออกจากระบบ</button></span></div></div>
   <p>เลือกนิคมได้หลายแห่งหรือทุกแห่งพร้อมกัน · สีม่วงอ่อนคือแปลงที่มีผู้ประกอบการแล้ว (มีชื่อบริษัท หรือมี CID ที่เช่า/ซื้อแล้วแต่ยังไม่เชื่อมข้อมูล) สีส้มอ่อนคือแปลงว่างในพื้นที่อุตสาหกรรม สีเทาคือพื้นที่ส่วนกลาง (พื้นที่สีเขียว สำนักงาน สาธารณูปโภค พาณิชยกรรม) ซึ่งไม่นับเป็นแปลงว่าง · คลิกป้ายชื่อนิคมเพื่อซูมเข้า · ซูมใกล้ๆ เพื่อดูชื่อบริษัทบนแปลง · เส้นประสีเทาคือโรงงานที่เลิก/หยุดกิจการ สีจางคือแปลงผัง · ใช้ปุ่ม “ตัวกรอง” เลือกชั้นข้อมูล สถานะ และแปลงที่ซ้อนทับ</p>
 </header>
-<div class="bar">
+<div class="tabrow"><div class="vtabs" role="tablist" aria-label="มุมมอง"><button role="tab" data-go="map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg>แผนที่</button><button role="tab" data-go="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>ภาพรวม</button><button role="tab" data-go="estates"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>รายนิคม</button></div><span class="vt" id="vtitle"></span></div>
+<div class="bar view" data-v="map overview">
   <div class="pick">
     <button class="chip" id="pk" aria-expanded="false" aria-controls="pp">เลือกนิคม (<span id="pkn">0</span>/<span id="pkt">0</span>)</button>
     <div class="pp" id="pp" hidden>
@@ -551,12 +727,18 @@ html.authed .gate{display:none}
   <span class="stats" id="stats" aria-live="polite"></span>
   <span class="cidst" id="cidst" aria-live="polite"></span>
 </div>
-<main>
+<main class="view" data-v="map">
   <div id="map"></div>
   <div id="sheet"><button id="pclose">ปิด ✕</button><aside id="panel" aria-live="polite"></aside></div>
 </main>
-<section class="fdet" id="fdet" hidden aria-live="polite" aria-label="ข้อมูลโรงงาน"></section>
-<section class="dash" id="dash" aria-label="สรุปข้อมูลนิคมอุตสาหกรรม"></section>
+<div class="view" data-v="map"><section class="fdet" id="fdet" hidden aria-live="polite" aria-label="ข้อมูลโรงงาน"></section></div>
+<div class="view" data-v="overview"><section class="dash" id="dash" aria-label="สรุปข้อมูลนิคมอุตสาหกรรม"></section></div>
+<section class="view pg" data-v="estates" id="v-estates"></section>
+<section class="view pg" data-v="operators" id="v-operators"></section>
+<section class="view pg" data-v="qa" id="v-qa"></section>
+<section class="view pg" data-v="help" id="v-help"><h2>คำอธิบายตัวชี้วัด</h2><p class="lead">นิยามตัวเลขที่ใช้ในหน้านี้</p><div class="pbox"><dl class="gl"><dt>แปลงทั้งหมด</dt><dd>จำนวนแปลงที่มีรูปแปลงบนแผนที่ = ผัง + โรงงาน ของทุกนิคมรวมกัน (แปลงที่ยังไม่มีรูปแปลงไม่นับ ดูได้ในหน้า “ตรวจข้อมูล”)</dd><dt>ผัง / โรงงาน</dt><dd>ชั้นข้อมูลตามฟิลด์ Measter_Plan · ผัง = แปลงตามผังนิคม · โรงงาน = แปลงที่ผูกกับข้อมูลโรงงานจากระบบ e-PP แปลงทั้งสองชั้นอาจซ้อนทับกันได้</dd><dt>มีผู้ประกอบการ</dt><dd>จำนวนแปลงโรงงานที่มี CID กำกับ (จากไฟล์ และอัปเดตสดจาก ArcGIS หลังเข้าสู่ระบบ) นับต่อแปลง ถ้า CID เดียวอยู่หลายแปลงจะนับทุกแปลง</dd><dt>แปลงที่มีบริษัท</dt><dd>แปลงที่มีชื่อบริษัท ชื่อที่แก้ไขในหน้านี้ หรือมี CID ใช้กำหนดสีม่วงบนแผนที่</dd><dt>แปลงว่าง</dt><dd>แปลงที่ยังไม่มีบริษัท และอยู่ในพื้นที่อุตสาหกรรมเท่านั้น (เขตอุตสาหกรรม อุตสาหกรรมทั่วไป เขตประกอบการเสรี พื้นที่ SME) ไม่นับพื้นที่สีเขียว สาธารณูปโภค สำนักงาน หรือพาณิชยกรรม</dd><dt>พื้นที่ส่วนกลาง</dt><dd>แปลงที่ไม่ใช่พื้นที่อุตสาหกรรม เช่น พื้นที่สีเขียว ถนน สาธารณูปโภค สำนักงาน กนอ.</dd><dt>พื้นที่ (ไร่)</dt><dd>คำนวณจากรูปแปลงบนแผนที่ (ระบบพิกัด UTM 47N) 1 ไร่ = 1,600 ตร.ม. ไม่ใช้ฟิลด์ ไร่-งาน-วา เพราะมีข้อมูลเพียงบางแปลง · “พื้นที่จริงไม่นับซ้ำ” คือพื้นที่รวมหลังตัดส่วนที่แปลงซ้อนทับกัน</dd><dt>แปลงที่ซ้อนทับกัน</dt><dd>แปลงที่ทับกับแปลงอื่นตั้งแต่ 20% ของแปลงที่เล็กกว่าขึ้นไป</dd><dt>สถานะโรงงาน</dt><dd>จากฟิลด์ cancel_production_status: แจ้งเริ่มกิจการแล้ว = เปิดดำเนินการ · ยังไม่แจ้งเริ่ม · หยุดประกอบกิจการ · เลิกกิจการ · ไม่มีค่า = ไม่ระบุสถานะ (แก้ไขรายแปลงในหน้าแผนที่ได้ เก็บไว้ในเบราว์เซอร์เท่านั้น)</dd><dt>แรงงานในโรงงาน</dt><dd>ผลรวมผู้บริหารและช่างเทคนิค คนงานมีฝีมือ/ไม่มีฝีมือ ชาย-หญิง และช่างเทคนิคต่างชาติ จากระบบ e-PP นับโรงงานละครั้งตาม CID</dd><dt>การได้มาซึ่งที่ดิน</dt><dd>จัดกลุ่มจากฟิลด์ LandAcquisition (หรือ OwnerType เมื่อไม่มีค่า) เป็น ซื้อ / รับโอนกรรมสิทธิ์ · เช่า / รับโอนสิทธิการเช่า · ได้รับความยินยอมจากเจ้าของ · อื่น ๆ</dd></dl></div></section>
+</div>
+</div>
 <div id="dtip"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@2.17.0/dist/leaflet-geoman.min.js"></script>
@@ -984,6 +1166,96 @@ $("pclose").onclick=function(){var prev=Object.keys(sel);sel={};render(prev)};
 Array.prototype.forEach.call(document.querySelectorAll(".xc"),function(b){b.onclick=function(ev){ev.stopPropagation();if(b.dataset.x==="pp")openPick(false);else openFilter(false)}});
 var hp=document.querySelector("header p");if(hp)hp.onclick=function(){hp.classList.toggle("open")};
 setVis(DEF,true);fitVisible();render();
+/* ---------- app shell: views, sidebar, tabs (hash routing: #map #overview #estates #operators #qa #help) ---------- */
+var QA={"date":"2026-10-22","nogeom":{"ทีเอฟดี":11,"บางชัน":8,"บางปู":471,"ลาดกระบัง":243,"บางพลี":46,"ภาคเหนือ":42,"แหลมฉบัง":118,"มาบตาพุด":87,"ดับบลิวเอชเอ ชลบุรี 1":14,"เวลโกรว์":29,"สมุทรสาคร":19,"บ้านหว้า":23,"บางปะอิน":30,"ดับบลิวเอชเอตะวันออก (มาบตาพุด)":37,"เกตเวย์ ซิตี้":29,"นครหลวง":15,"หนองแค":10,"ผาแดง":2,"ภาคใต้จังหวัดสงขลา":19,"อีสเทิร์นซีบอร์ด (ระยอง)":151,"ปิ่นทอง":38,"อมตะซิตี้ ระยอง":168,"เอเซีย":17,"สินสาคร":16,"ดับบลิวเอชเอ อีสเทิร์นซีบอร์ด 1":84,"อาร์ ไอ แอล":3,"ปิ่นทอง (แหลมฉบัง)":30,"ปิ่นทอง (โครงการ 3)":21,"เอเซีย (สุวรรณภูมิ)":36,"ดับบลิวเอชเอ ชลบุรี 2":2,"ปิ่นทอง (โครงการ 5)":2,"ดับบลิวเอชเอ อีสเทิร์นซีบอร์ด 2":50,"บางปู (เหนือ)":34,"ดับบลิวเอชเอ อีสเทิร์นซีบอร์ด 4":13,"ดับบลิวเอชเอ อินดัสเตรียล เอสเตท ระยอง":10,"เวิลด์ (ลำพูน)":1,"ดับบลิวเอชเอ ระยอง 36":22,"แพรกษา อินดัสเทรียลล์":20,"บ่อทอง 33":2,"โรจนะแหลมฉบัง":13,"สำนักงานท่าเรืออุตสาหกรรมมาบตาพุด":17,"โรจนะชลบุรี 2 (เขาคันทรง)":7,"สมาร์ท ปาร์ค":1,"โรจนะหนองใหญ่ จังหวัดชลบุรี":5,"เอเพ็กซ์กรีน อินดัสเตรียล เอสเตท":12,"หนองละลอก":27,"อมตะซิตี้ ชลบุรี":743,"อัญธานี":309,"ไฮเทค กบินทร์":3,"ปิ่นทอง (โครงการ 4)":2,"ดับบลิวเอชเอ อีสเทิร์นซีบอร์ด 3":1,"อมตะซิตี้ ชลบุรี (โครงการ2)":5,"ยามาโตะ อินดัสทรีส์":3,"ซีพีจีซี":1,"ดับบลิวเอชเอ อีสเทิร์นชีบอร์ด 3.1":1,"อมตะซิตี้ ชลบุรี 2":31,"โรจนะหนองใหญ่ 2":19,"ดับบลิวเอชเอ อีสเทิร์นชีบอร์ด 5":7,"เฮอร์มีส":6,"อารยะ":4},"badcid":[[17385,"อมตะซิตี้ ชลบุรี","G320/C, G320/F","ff01055310448600010"],[4714,"บางปู","E-98/2","น.53(5)-300/2562-นนป."]]};
+var VIEWS={map:"แผนที่แปลง",overview:"ภาพรวม",estates:"ตารางรายนิคม",operators:"ผู้ประกอบการรายใหญ่",qa:"ตรวจข้อมูล",help:"คำอธิบายตัวชี้วัด"},curV="",SRT={estates:["a",-1],operators:["a",-1]},opScope="all";
+function sumHr(x){var t=0;for(var q=0;q<6;q++)t+=x[5][q];return t}
+function goParcel(e,i){showV("map");setTimeout(function(){pickResult([e,i])},30)}
+function goEstate(e){showV("map");setTimeout(function(){busy(function(){if(!vis[e])setVis(e,true);render();map.fitBounds(EL[e].b.pad(.05))})},30)}
+function thS(v,key,lbl,num){var s=SRT[v];return'<th data-s="'+key+'" class="'+(num?"num ":"")+(s[0]===key?"on"+(s[1]>0?" up":""):"")+'">'+lbl+'</th>'}
+function sortRows(rows,v){var s=SRT[v];rows.sort(function(a,b){var x=a[s[0]],y=b[s[0]];return(typeof x==="string"?x.localeCompare(y,"th"):x-y)*s[1]})}
+function bindSort(box,v,fn){Array.prototype.forEach.call(box.querySelectorAll("th[data-s]"),function(th){th.onclick=function(){var k=th.dataset.s,s=SRT[v];
+  SRT[v]=[k,s[0]===k?-s[1]:(k==="n"||k==="name"?1:-1)];fn()}})}
+/* ตารางรายนิคม */
+function vEstates(){var box=$("v-estates"),q=(box.querySelector("input")||{}).value||"";
+  var rows=EST.map(function(E,e){var r={e:e,n:E.n,t:E.p.length,pl:0,f:0,c:0,v:0,a:0,ua:E.ua||0,hr:0},seen={};
+    E.p.forEach(function(d,i){r.a+=d[0];if(d[9]){r.f++;var ck=CIDM[K(e,i)]||d[15];if(ck)r.c++;
+      if(d[16]&&d[16][5]){var u=ck||("o"+d[14]);if(!seen[u]){seen[u]=1;r.hr+=sumHr(d[16])}}}else r.pl++;
+      if(!has(e,i)&&rent(e,i))r.v++});return r});
+  var tot={t:0,pl:0,f:0,c:0,v:0,a:0,hr:0};rows.forEach(function(r){for(var k in tot)tot[k]+=r[k]});
+  var fr=q?rows.filter(function(r){return r.n.toLowerCase().indexOf(q.toLowerCase())>=0}):rows;sortRows(fr,"estates");
+  var mx=Math.max.apply(null,rows.map(function(r){return r.a}))||1;
+  var h='<h2>ตารางรายนิคม</h2><p class="lead">ทุกนิคมในไฟล์ '+EST.length+' แห่ง · แปลงทั้งหมด = ผัง + โรงงาน · มีผู้ประกอบการ = แปลงโรงงานที่มี CID · พื้นที่คำนวณจากรูปแปลง · คลิกแถวเพื่อไปที่นิคมบนแผนที่</p>'+
+    '<div class="pbox"><div class="tools"><input type="search" placeholder="ค้นหาชื่อนิคม" value="'+esc(q)+'" aria-label="ค้นหาชื่อนิคม"><small>แสดง '+fr.length+' จาก '+rows.length+' นิคม · คลิกหัวคอลัมน์เพื่อเรียง</small></div>'+
+    '<div class="scr2"><table class="gt"><thead><tr>'+thS("estates","n","นิคม")+thS("estates","t","แปลงทั้งหมด",1)+thS("estates","pl","ผัง",1)+thS("estates","f","โรงงาน",1)+
+    thS("estates","c","มีผู้ประกอบการ",1)+thS("estates","v","แปลงว่าง",1)+thS("estates","a","พื้นที่ (ไร่)",1)+thS("estates","hr","แรงงาน (คน)",1)+'</tr></thead><tbody>'+
+    fr.map(function(r){return'<tr data-e="'+r.e+'"><td>'+esc(r.n)+'<span class="pbar" style="width:'+(r.a/mx*100)+'%"></span></td><td class="num">'+fmt(r.t)+'</td><td class="num">'+fmt(r.pl)+'</td><td class="num">'+fmt(r.f)+
+      '</td><td class="num">'+fmt(r.c)+'</td><td class="num">'+fmt(r.v)+'</td><td class="num">'+fmt(r.a/1600)+'</td><td class="num">'+(r.hr?fmt(r.hr):"–")+'</td></tr>'}).join('')+
+    '</tbody><tfoot><tr><td><b>รวม</b></td><td class="num"><b>'+fmt(tot.t)+'</b></td><td class="num">'+fmt(tot.pl)+'</td><td class="num">'+fmt(tot.f)+'</td><td class="num">'+fmt(tot.c)+'</td><td class="num">'+fmt(tot.v)+
+    '</td><td class="num">'+fmt(tot.a/1600)+'</td><td class="num">'+fmt(tot.hr)+'</td></tr></tfoot></table></div></div>';
+  box.innerHTML=h;var inp=box.querySelector("input");inp.oninput=function(){vEstates();var x=$("v-estates").querySelector("input");x.focus();x.setSelectionRange(x.value.length,x.value.length)};
+  bindSort(box,"estates",vEstates);
+  Array.prototype.forEach.call(box.querySelectorAll("tbody tr"),function(tr){tr.onclick=function(){goEstate(+tr.dataset.e)}})}
+/* ผู้ประกอบการรายใหญ่ */
+function vOperators(){var box=$("v-operators"),q=(box.querySelector("input")||{}).value||"",es=opScope==="sel"?V():EST.map(function(_,e){return e}),g={};
+  es.forEach(function(e){EST[e].p.forEach(function(d,i){if(opScope==="sel"&&!pass(e,i))return;var nm=co(e,i);if(!nm)return;
+    var r=g[nm]||(g[nm]={name:nm,cnt:0,a:0,es:{},hr:0,seen:{},e:e,i:i});r.cnt++;r.a+=d[0];r.es[e]=1;
+    var ck=CIDM[K(e,i)]||d[15];if(d[16]&&d[16][5]){var u=ck||("o"+d[14]);if(!r.seen[u]){r.seen[u]=1;r.hr+=sumHr(d[16])}}})});
+  var rows=Object.keys(g).map(function(k){var r=g[k];r.ne=Object.keys(r.es).length;return r});
+  var fr=q?rows.filter(function(r){return r.name.toLowerCase().indexOf(q.toLowerCase())>=0}):rows;sortRows(fr,"operators");var top=fr.slice(0,100);
+  var mx=top.length?Math.max.apply(null,top.map(function(r){return r[SRT.operators[0]]||0})):1;
+  var h='<h2>ผู้ประกอบการรายใหญ่</h2><p class="lead">จัดกลุ่มตามชื่อผู้ประกอบการที่ตรงกันทุกตัวอักษร · แรงงานนับโรงงานละครั้งตาม CID · คลิกแถวเพื่อดูแปลงบนแผนที่</p>'+
+    '<div class="pbox"><div class="tools"><div class="vtabs" role="tablist" aria-label="ขอบเขต"><button data-sc="all" aria-selected="'+(opScope==="all")+'">ทุกนิคม</button><button data-sc="sel" aria-selected="'+(opScope==="sel")+'">นิคมที่เลือก ('+V().length+')</button></div>'+
+    '<input type="search" placeholder="ค้นหาชื่อผู้ประกอบการ" value="'+esc(q)+'" aria-label="ค้นหาชื่อผู้ประกอบการ"><small>'+fmt(rows.length)+' ราย'+(fr.length>100?' · แสดง 100 อันดับแรก':'')+'</small></div>'+
+    '<div class="scr2"><table class="gt"><thead><tr><th class="num">#</th>'+thS("operators","name","ชื่อผู้ประกอบการ")+thS("operators","cnt","แปลง",1)+thS("operators","a","พื้นที่ (ไร่)",1)+thS("operators","ne","นิคม",1)+thS("operators","hr","แรงงาน (คน)",1)+'</tr></thead><tbody>'+
+    top.map(function(r,k){return'<tr data-e="'+r.e+'" data-i="'+r.i+'"><td class="num">'+(k+1)+'</td><td>'+esc(r.name)+'<span class="pbar" style="width:'+((r[SRT.operators[0]]||0)/mx*100)+'%"></span></td><td class="num">'+fmt(r.cnt)+
+      '</td><td class="num">'+fmt(r.a/1600,1)+'</td><td class="num">'+fmt(r.ne)+'</td><td class="num">'+(r.hr?fmt(r.hr):"–")+'</td></tr>'}).join('')+'</tbody></table></div></div>';
+  box.innerHTML=h;var inp=box.querySelector("input");inp.oninput=function(){vOperators();var x=$("v-operators").querySelector("input");x.focus();x.setSelectionRange(x.value.length,x.value.length)};
+  Array.prototype.forEach.call(box.querySelectorAll("[data-sc]"),function(b){b.onclick=function(){opScope=b.dataset.sc;vOperators()}});
+  bindSort(box,"operators",vOperators);
+  Array.prototype.forEach.call(box.querySelectorAll("tbody tr"),function(tr){tr.onclick=function(){goParcel(+tr.dataset.e,+tr.dataset.i)}})}
+/* ตรวจข้อมูล */
+function qaData(){var pend=[],unk=[],dup={},ng=0;
+  EST.forEach(function(E,e){E.p.forEach(function(d,i){if(!d[9])return;var ck=CIDM[K(e,i)]||d[15];
+    if(ck&&!co(e,i))pend.push([e,i]);if(st(e,i)===4)unk.push([e,i]);if(ck)(dup[ck]=dup[ck]||[]).push([e,i])})});
+  var dk=Object.keys(dup).filter(function(k){return dup[k].length>1});
+  Object.keys(QA.nogeom||{}).forEach(function(k){ng+=QA.nogeom[k]});
+  return{pend:pend,unk:unk,dup:dk.map(function(k){return[k,dup[k]]}),ng:ng,bad:QA.badcid||[]}}
+function qaBadge(){var d=qaData(),n=d.bad.length+d.pend.length+d.dup.length;var b=$("nbqa");if(b){b.textContent=fmt(n);b.hidden=!n}}
+function vQA(){var box=$("v-qa"),d=qaData();
+  var lst=function(a,cols){return'<div class="scr2"><table class="gt"><thead><tr><th>นิคม</th><th>แปลง</th>'+cols+'</tr></thead><tbody>'+a.slice(0,50).map(function(x){var e=x[0],i=x[1],p=EST[e].p[i];
+    return'<tr data-e="'+e+'" data-i="'+i+'"><td>'+esc(EST[e].n)+'</td><td>'+esc(p[2]||"ไม่มีรหัส")+'</td><td>'+esc(CIDM[K(e,i)]||p[15]||"–")+'</td><td>'+esc(co(e,i)||"–")+'</td><td class="num">'+p[14]+'</td></tr>'}).join('')+'</tbody></table></div>'+
+    (a.length>50?'<p class="more">แสดง 50 รายการแรกจาก '+fmt(a.length)+'</p>':'')},cols='<th>CID</th><th>ชื่อผู้ประกอบการ</th><th class="num">OBJECTID</th>';
+  var sec=function(t,n,sub,body,ok){return'<div class="pbox qa"><h3>'+t+'<span class="qn'+(n?"":" ok")+'">'+(n?fmt(n):"ไม่พบ")+'</span></h3><p class="sub">'+sub+'</p>'+(n?body:'')+'</div>'};
+  var ngk=Object.keys(QA.nogeom||{}).sort(function(a,b){return QA.nogeom[b]-QA.nogeom[a]});
+  var h='<h2>ตรวจข้อมูล</h2><p class="lead">รายการที่ควรตรวจหรือแก้ไขใน ArcGIS · ข้อมูลจากไฟล์ export วันที่ '+esc(QA.date||"–")+' รวมกับ CID ที่อัปเดตสดหลังเข้าสู่ระบบ · คลิกแถวเพื่อดูบนแผนที่</p>'+
+    sec("CID รูปแบบไม่ถูกต้อง",d.bad.length,"ค่าในช่อง CID ไม่ตรงรูปแบบ f ตามด้วยตัวเลข 16–17 หลัก จึงไม่ถูกนำมาใช้",
+      '<div class="scr2"><table class="gt"><thead><tr><th class="num">OBJECTID</th><th>นิคม</th><th>แปลง</th><th>ค่าที่บันทึก</th></tr></thead><tbody>'+d.bad.map(function(x){return'<tr><td class="num">'+x[0]+'</td><td>'+esc(x[1])+'</td><td>'+esc(x[2]||"–")+'</td><td><code>'+esc(x[3])+'</code></td></tr>'}).join('')+'</tbody></table></div>')+
+    sec("รายการที่ยังไม่มีรูปแปลง",d.ng,"มีข้อมูลใน layer แต่ยังไม่ได้วาดรูปแปลง จึงไม่แสดงบนแผนที่และไม่นับในตัวเลขสรุป",
+      '<div class="scr2"><table class="gt"><thead><tr><th>นิคม</th><th class="num">จำนวน</th></tr></thead><tbody>'+ngk.map(function(k){return'<tr><td>'+esc(k)+'</td><td class="num">'+fmt(QA.nogeom[k])+'</td></tr>'}).join('')+'</tbody></table></div>')+
+    sec("มี CID แต่ยังไม่มีชื่อผู้ประกอบการ",d.pend.length,"แปลงโรงงานที่มีผู้ประกอบการแล้ว แต่ยังไม่ได้เชื่อมชื่อจากระบบ e-PP",lst(d.pend,cols))+
+    sec("CID เดียวกันอยู่หลายแปลง",d.dup.length,"อาจเป็นโรงงานเดียวที่ครอบหลายแปลง หรือบันทึกซ้ำ ควรตรวจว่าถูกต้องหรือไม่",
+      '<div class="scr2"><table class="gt"><thead><tr><th>CID</th><th class="num">แปลง</th><th>นิคม</th><th>ชื่อผู้ประกอบการ</th></tr></thead><tbody>'+d.dup.slice(0,50).map(function(x){var a=x[1][0];
+        return'<tr data-e="'+a[0]+'" data-i="'+a[1]+'"><td><code>'+esc(x[0])+'</code></td><td class="num">'+x[1].length+'</td><td>'+esc(EST[a[0]].n)+'</td><td>'+esc(co(a[0],a[1])||"–")+'</td></tr>'}).join('')+'</tbody></table></div>'+
+        (d.dup.length>50?'<p class="more">แสดง 50 รายการแรกจาก '+fmt(d.dup.length)+'</p>':''))+
+    sec("แปลงโรงงานที่ไม่ระบุสถานะ",d.unk.length,"ไม่มีสถานะประกอบกิจการในระบบ e-PP (ไม่นับเป็นข้อผิดพลาด แต่ควรเติมข้อมูลถ้าทำได้)",lst(d.unk,cols));
+  box.innerHTML=h;
+  Array.prototype.forEach.call(box.querySelectorAll("tbody tr[data-e]"),function(tr){tr.onclick=function(){goParcel(+tr.dataset.e,+tr.dataset.i)}})}
+function showV(v){if(!VIEWS[v])v="map";var first=!curV;curV=v;
+  Array.prototype.forEach.call(document.querySelectorAll(".view"),function(el){el.hidden=el.dataset.v.split(" ").indexOf(v)<0});
+  Array.prototype.forEach.call(document.querySelectorAll(".ni[data-go]"),function(a){if(a.dataset.go===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  Array.prototype.forEach.call(document.querySelectorAll(".vtabs [data-go]"),function(b){b.setAttribute("aria-selected",b.dataset.go===v?"true":"false")});
+  $("vtitle").textContent=VIEWS[v];
+  if(v==="map")setTimeout(function(){map.invalidateSize()},0);
+  if(v==="overview")dash();if(v==="estates")vEstates();if(v==="operators")vOperators();if(v==="qa")vQA();
+  document.body.classList.remove("nav-open");if(!first)window.scrollTo(0,0);
+  if(location.hash.slice(1)!==v)history.replaceState(null,"","#"+v)}
+window.__navRefresh=function(){qaBadge();if(curV==="estates")vEstates();else if(curV==="operators")vOperators();else if(curV==="qa")vQA()};
+Array.prototype.forEach.call(document.querySelectorAll("[data-go]"),function(a){a.addEventListener("click",function(ev){ev.preventDefault();showV(a.dataset.go)})});
+window.addEventListener("hashchange",function(){showV(location.hash.slice(1))});
+$("burger").onclick=function(){document.body.classList.toggle("nav-open")};$("scrim").onclick=function(){document.body.classList.remove("nav-open")};
+qaBadge();showV(location.hash.slice(1)||"map");
+
 /* ---------- CID (EPP_2026_V1). Each parcel carries its OBJECTID (d[14]) and CID (d[15]) from the export.
    After login the page re-reads OBJECTID+CID from the live layer so newly added CIDs show up too. ---------- */
 (function(){
@@ -991,7 +1263,7 @@ setVis(DEF,true);fitVisible();render();
   var box=$("cidst");function say(t,cls){box.textContent=t;box.className="cidst"+(cls?" "+cls:"")}
   var OID={};
   function apply(get){var m={},fresh=0;EST.forEach(function(E,e){E.p.forEach(function(d,i){var c=get(d);if(c){var k=K(e,i);m[k]=c;if(!d[4]&&!(k in ov))fresh++}})});
-    CIDM=m;rev++;render();hdr();return[Object.keys(m).length,fresh]}
+    CIDM=m;rev++;render();hdr();if(window.__navRefresh)window.__navRefresh();return[Object.keys(m).length,fresh]}
   EST.forEach(function(E,e){E.p.forEach(function(d,i){if(d[14]!=null)OID[d[14]]=K(e,i)})});
   var r0=apply(function(d){return d[15]||""});
   say("CID: "+fmt(r0[0])+" แปลง (ข้อมูลในไฟล์) · มีผู้ประกอบการจาก CID "+fmt(r0[1])+" แปลง");
