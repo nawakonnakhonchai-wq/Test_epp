@@ -160,7 +160,7 @@ for name in est_names:
                   idx(IG, txt(p.get('industrial_group_desc'))), txt(p.get('factory_work_desc')),
                   txt(p.get('fid14n')), txt(p.get('mercant_id')), o, c])
         if plan:
-            P[-1].append(stat_row(p))
+            P[-1] += [stat_row(p), txt(p.get('FactoryID'))]     # d[16] stats, d[17] factory licence (search)
         if o not in old_by_oid:
             stats['new_parcels'] += 1
     # overlaps (>= 20% of the smaller parcel), symmetric, largest share first
@@ -238,25 +238,35 @@ def imp_date(v):
         return v[:10]
 
 
-FD = {}
-for e, name in enumerate(est_names):
-    FD[e] = {}
-    for o, f in by_est[name].items():
-        p = f['properties']
-        if txt(p['Measter_Plan']) != 'โรงงาน':
-            continue
-        row = [txt(p.get('mercant_id')), txt(p.get('FactoryID')), txt(p.get('factory_type_no')),
+def fd_row(p):
+    row = [txt(p.get('mercant_id')), txt(p.get('FactoryID')), txt(p.get('factory_type_no')),
                txt(p.get('factory_work_desc')),
                txt(p.get('factory_work_desc_long')) or txt(p.get('factory_work_desc')),
                txt(p.get('LandAcquisition')), txt(p.get('OwnerType')), addr(p),
                num(p.get('factory_area_sqmeter')), num(p.get('RAI')), num(p.get('NGAN')), num(p.get('WA')),
                txt(p.get('cancel_production_status')), imp_date(p.get('import_date')),
                1 if txt(p.get('Active')).lower() == 'true' else 0]
-        while row and row[-1] in ('', None):
-            row.pop()
-        FD[e][o] = [None if v == '' else v for v in row]
+    while row and row[-1] in ('', None):
+        row.pop()
+    return [None if v == '' else v for v in row]
+
+
+FD = {}
+for e, name in enumerate(est_names):
+    FD[e] = {}
+    for o, f in by_est[name].items():
+        p = f['properties']
+        if txt(p['Measter_Plan']) == 'โรงงาน':
+            FD[e][o] = fd_row(p)
 fd_files = {e: json.dumps({'k': FD_KEYS, 'r': r}, ensure_ascii=False, separators=(',', ':')) for e, r in FD.items()}
-fd_hash = hashlib.md5(''.join(fd_files[e] for e in sorted(fd_files)).encode()).hexdigest()[:10]
+# records without geometry (searchable on the page, not drawn): data/nogeom.json
+NG_KEYS = ['oid', 'est', 'parcel', 'name', 'cid', 'plan']
+ng_json = json.dumps({'k': NG_KEYS, 'd': FD_KEYS, 'r': [
+    [p['OBJECTID'], txt(p.get('IEAT')), txt(p.get('Name_Parcel')) or txt(p.get('Name_Parcel_long')),
+     txt(p.get('mercant_name')), cid(p.get('CID')), txt(p.get('Measter_Plan'))] + fd_row(p)
+    for p in sorted(skipped, key=lambda p: p['OBJECTID'])]}, ensure_ascii=False, separators=(',', ':'))
+fd_hash = hashlib.md5((''.join(fd_files[e] for e in sorted(fd_files)) + ng_json).encode()).hexdigest()[:10]
+print(f"records without geometry exported={len(skipped)} size={len(ng_json.encode()) / 1e6:.2f} MB")
 print(f"factory details rows={sum(len(r) for r in FD.values())} files={len(fd_files)} "
       f"largest={max(len(v.encode()) for v in fd_files.values()) / 1e6:.2f} MB")
 
@@ -275,6 +285,7 @@ if WRITE:
     for e, js in fd_files.items():
         open(os.path.join(fd_dir, f'{e}.json'), 'w', encoding='utf-8').write(js)
     print('written', len(fd_files), 'files in', fd_dir)
+    open(os.path.join(os.path.dirname(fd_dir), 'nogeom.json'), 'w', encoding='utf-8').write(ng_json)
     # cache-busting version the page appends when it fetches factory files
     out = re.sub(r'var FDV="[^"]*"', 'var FDV="' + fd_hash + '"', out)
     open(html_path, 'w', encoding='utf-8').write(out)
