@@ -10,8 +10,10 @@ EPP_2026_V1 feature layer (ArcGIS Pro: Features To JSON, Output to GeoJSON + Pro
   they are ignored.
 - Estate and parcel order from the current index.html is kept, new parcels are appended,
   so overrides saved in viewers' browsers keep pointing at the same parcels.
-- If the layer has no company name for a parcel but the current page does (e.g. filled
-  earlier with fill_names_by_cid.py), the current name is kept.
+- All attributes come from the GeoJSON only (nothing is carried over from the current page).
+- CID pairing: a record without geometry whose CID matches a parcel on the map is the same
+  factory. If that parcel has no factory data of its own, it takes the record's attributes;
+  either way the record is not listed again as "ยังไม่มีรูปแปลง" and the pair is reported (QA).
 Needs: pip install shapely pyproj
 """
 import csv, hashlib, json, os, re, sys
@@ -73,6 +75,51 @@ for f in feats:
     est = txt(p.get('IEAT')) or '(ไม่ระบุนิคม)'
     by_est[est][p['OBJECTID']] = f
 
+
+
+def _when(p):
+    from email.utils import parsedate_to_datetime
+    try:
+        return parsedate_to_datetime(txt(p.get('import_date'))).timestamp()
+    except (TypeError, ValueError):
+        return 0
+
+
+FACT_KEYS = ('mercant_name', 'FactoryID', 'cancel_production_status', 'factory_work_desc', 'industrial_group_desc')
+ng_by_cid = {}
+for p in skipped:
+    c = cid(p.get('CID'))
+    key = (txt(p.get('Active')).lower() == 'true', _when(p), p['OBJECTID'])
+    if c and (c not in ng_by_cid or key > ng_by_cid[c][0]):
+        ng_by_cid[c] = (key, p)
+SRC, PAIRS = {}, []
+for est, fs in by_est.items():
+    for o, f in fs.items():
+        p = f['properties']
+        c = cid(p.get('CID'))
+        if not c or c not in ng_by_cid:
+            continue
+        partner = ng_by_cid[c][1]
+        borrow = txt(p.get('Measter_Plan')) == 'โรงงาน' and not any(txt(p.get(k)) for k in FACT_KEYS)
+        if borrow:
+            src = dict(partner)
+            src.update({'OBJECTID': o, 'Measter_Plan': p['Measter_Plan'], 'IEAT': p.get('IEAT'), 'CID': p.get('CID'),
+                        'Name_Parcel': txt(p.get('Name_Parcel')) or txt(partner.get('Name_Parcel')) or txt(partner.get('Name_Parcel_long')),
+                        'Discription': p.get('Discription') if txt(p.get('Discription')) else partner.get('Discription')})
+            SRC[o] = src
+        PAIRS.append([partner['OBJECTID'], o, est, txt(p.get('Name_Parcel')),
+                      txt(partner.get('Name_Parcel')) or txt(partner.get('Name_Parcel_long')),
+                      txt(partner.get('mercant_name')), c, 1 if borrow else 0])
+paired_cids = {r[6] for r in PAIRS}
+# every record without geometry whose CID is on the map is the same factory, even when several share that CID
+unmapped = [p for p in skipped if cid(p.get('CID')) not in paired_cids]
+for p in skipped:
+    c = cid(p.get('CID'))
+    if c in paired_cids and p['OBJECTID'] != ng_by_cid[c][1]['OBJECTID']:
+        m = next(r for r in PAIRS if r[6] == c)
+        PAIRS.append([p['OBJECTID'], m[1], m[2], m[3], txt(p.get('Name_Parcel')) or txt(p.get('Name_Parcel_long')),
+                      txt(p.get('mercant_name')), c, 0])
+
 to_utm = Transformer.from_crs(4326, 32647, always_xy=True)
 
 
@@ -132,7 +179,7 @@ for name in est_names:
     ug = [utm(g).buffer(0) for g in geoms]
     P = []
     for o, f, g in zip(order, (fs[o] for o in order), ug):
-        p = f['properties']
+        p = SRC.get(o, f['properties'])
         gm = f['geometry']
         polys = gm['coordinates'] if gm['type'] == 'MultiPolygon' else [gm['coordinates']]
         rings = []
@@ -148,9 +195,6 @@ for name in est_names:
                     rings.append(flat)
         plan = PLANS[txt(p['Measter_Plan'])]
         name_ = txt(p.get('mercant_name'))
-        if not name_ and o in old_by_oid and old_by_oid[o][1][4]:
-            name_ = old_by_oid[o][1][4]
-            stats['name_kept_from_page'] += 1
         c = cid(p.get('CID'))
         if txt(p.get('CID')) and not c:
             bad_cid.append(p)
@@ -182,8 +226,9 @@ for name in est_names:
 removed = [o for o in old_by_oid if not any(o in by_est[n] for n in by_est)]
 print(f"features in file={len(feats)} on map={sum(len(E['p']) for E in EST)} estates={len(EST)}")
 print(f"skipped no geometry={len(skipped)} table rows ignored={table_rows}")
-print(f"new parcels={stats['new_parcels']} removed parcels={len(removed)} "
-      f"names kept from page={stats['name_kept_from_page']} bad CID values ignored={len(bad_cid)}")
+print(f"new parcels={stats['new_parcels']} removed parcels={len(removed)} bad CID values ignored={len(bad_cid)}")
+print(f"CID pairs (record without geometry = parcel on map)={len(PAIRS)} "
+      f"parcels filled from their pair={sum(r[7] for r in PAIRS)} still unmapped={len(unmapped)}")
 for p in bad_cid:
     print('  BAD CID', p['OBJECTID'], p.get('IEAT'), repr(p.get('CID')))
 if removed:
@@ -193,9 +238,13 @@ if REPORT:
     with open(REPORT, 'w', encoding='utf-8-sig', newline='') as fh:
         w = csv.writer(fh)
         w.writerow(['OBJECTID', 'IEAT', 'Measter_Plan', 'Name_Parcel', 'Name_Parcel_long', 'mercant_name', 'CID', 'สาเหตุ'])
-        for p in skipped:
+        for p in unmapped:
             w.writerow([p['OBJECTID'], txt(p.get('IEAT')), txt(p.get('Measter_Plan')), txt(p.get('Name_Parcel')),
                         txt(p.get('Name_Parcel_long')), txt(p.get('mercant_name')), txt(p.get('CID')), 'ไม่มีรูปแปลง'])
+        for r in PAIRS:
+            w.writerow([r[0], r[2], 'โรงงาน', r[4], '', r[5], r[6],
+                        f'ไม่มีรูปแปลง แต่ CID ตรงกับแปลงบนแผนที่ OBJECTID {r[1]} ({r[3]})' +
+                        (' ซึ่งไม่มีข้อมูลโรงงาน: ควรย้ายข้อมูลไปที่แปลงนั้น' if r[7] else ' ซึ่งมีข้อมูลอยู่แล้ว: รายการซ้ำ')])
         for p in bad_cid:
             w.writerow([p['OBJECTID'], txt(p.get('IEAT')), txt(p.get('Measter_Plan')), txt(p.get('Name_Parcel')),
                         txt(p.get('Name_Parcel_long')), txt(p.get('mercant_name')), p.get('CID'), 'CID รูปแบบไม่ถูกต้อง'])
@@ -255,7 +304,7 @@ FD = {}
 for e, name in enumerate(est_names):
     FD[e] = {}
     for o, f in by_est[name].items():
-        p = f['properties']
+        p = SRC.get(o, f['properties'])
         if txt(p['Measter_Plan']) == 'โรงงาน':
             FD[e][o] = fd_row(p)
 fd_files = {e: json.dumps({'k': FD_KEYS, 'r': r}, ensure_ascii=False, separators=(',', ':')) for e, r in FD.items()}
@@ -264,16 +313,16 @@ NG_KEYS = ['oid', 'est', 'parcel', 'name', 'cid', 'plan']
 ng_json = json.dumps({'k': NG_KEYS, 'd': FD_KEYS, 'r': [
     [p['OBJECTID'], txt(p.get('IEAT')), txt(p.get('Name_Parcel')) or txt(p.get('Name_Parcel_long')),
      txt(p.get('mercant_name')), cid(p.get('CID')), txt(p.get('Measter_Plan'))] + fd_row(p)
-    for p in sorted(skipped, key=lambda p: p['OBJECTID'])]}, ensure_ascii=False, separators=(',', ':'))
+    for p in sorted(unmapped, key=lambda p: p['OBJECTID'])]}, ensure_ascii=False, separators=(',', ':'))
 fd_hash = hashlib.md5((''.join(fd_files[e] for e in sorted(fd_files)) + ng_json).encode()).hexdigest()[:10]
-print(f"records without geometry exported={len(skipped)} size={len(ng_json.encode()) / 1e6:.2f} MB")
+print(f"records without geometry exported={len(unmapped)} size={len(ng_json.encode()) / 1e6:.2f} MB")
 print(f"factory details rows={sum(len(r) for r in FD.values())} files={len(fd_files)} "
       f"largest={max(len(v.encode()) for v in fd_files.values()) / 1e6:.2f} MB")
 
 if WRITE:
     dump = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
     out = html[:i0] + dump(EST) + html[i1:j0] + dump(LU) + html[j1:k0] + dump(IG) + html[k1:]
-    QA = {'date': __import__('datetime').date.fromtimestamp(os.path.getmtime(gj_path)).isoformat(), 'nogeom': Counter(txt(p.get('IEAT')) or '(ไม่ระบุนิคม)' for p in skipped),
+    QA = {'date': __import__('datetime').date.fromtimestamp(os.path.getmtime(gj_path)).isoformat(), 'nogeom': Counter(txt(p.get('IEAT')) or '(ไม่ระบุนิคม)' for p in unmapped), 'pairs': PAIRS,
           'badcid': [[p['OBJECTID'], txt(p.get('IEAT')), txt(p.get('Name_Parcel')), re.sub(r'\s+', ' ', str(p.get('CID'))).strip()] for p in bad_cid]}
     out = re.sub(r'var QA=\{[^\n]*?\};', lambda m: 'var QA=' + dump(QA) + ';', out, count=1)
     out = re.sub(r'var FX=\{[^\n]*?\};', lambda m: 'var FX=' + dump(FX) + ';', out, count=1)
