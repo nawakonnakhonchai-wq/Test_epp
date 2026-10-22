@@ -263,6 +263,9 @@ print(f"factory details rows={sum(len(r) for r in FD.values())} files={len(fd_fi
 if WRITE:
     dump = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
     out = html[:i0] + dump(EST) + html[i1:j0] + dump(LU) + html[j1:k0] + dump(IG) + html[k1:]
+    QA = {'date': __import__('datetime').date.fromtimestamp(os.path.getmtime(gj_path)).isoformat(), 'nogeom': Counter(txt(p.get('IEAT')) or '(ไม่ระบุนิคม)' for p in skipped),
+          'badcid': [[p['OBJECTID'], txt(p.get('IEAT')), txt(p.get('Name_Parcel')), re.sub(r'\s+', ' ', str(p.get('CID'))).strip()] for p in bad_cid]}
+    out = re.sub(r'var QA=\{[^\n]*?\};', lambda m: 'var QA=' + dump(QA) + ';', out, count=1)
     out = re.sub(r'var FX=\{[^\n]*?\};', lambda m: 'var FX=' + dump(FX) + ';', out, count=1)
     fd_dir = os.path.join(os.path.dirname(os.path.abspath(html_path)), 'data', 'factories')
     os.makedirs(fd_dir, exist_ok=True)
