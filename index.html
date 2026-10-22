@@ -445,43 +445,36 @@ html.authed .gate{display:none}
 .acct button{font:inherit;font-size:.76rem;color:var(--mute);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .acct button:hover{color:var(--ink)}
 /* ---------- factory details under the map ---------- */
+@media (min-width:861px){main{grid-template-columns:330px minmax(0,1fr)}#sheet>aside{order:-1}}
 .fdet{max-width:1280px;margin:0 auto 18px;padding:0 20px;scroll-margin-top:12px}
 .fdet[hidden]{display:none}
-.fdet>.fhd{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;background:#fff;border-radius:24px;padding:20px 22px;box-shadow:var(--frame,0 1px 3px rgba(0,0,0,.08))}
+.fdet>.fhd{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;background:#fff;border-radius:24px;padding:18px 22px;box-shadow:var(--frame,0 1px 3px rgba(0,0,0,.08))}
 .fey{margin:0;font-size:.8rem;color:var(--mute);letter-spacing:.01em}
-.fdet h2{margin:2px 0 8px;font-family:"Inter Tight","Noto Sans Thai",sans-serif;font-size:1.55rem;font-weight:700;letter-spacing:-.025em;line-height:1.2;color:var(--ink)}
+.fdet h2{margin:2px 0 8px;font-family:"Inter Tight","Noto Sans Thai",sans-serif;font-size:1.45rem;font-weight:700;letter-spacing:-.025em;line-height:1.25;color:var(--ink)}
 .fbd{display:flex;flex-wrap:wrap;gap:6px}
-.fb{font-size:.78rem;font-weight:600;padding:3px 10px;border-radius:999px;background:#EDEDED;color:#2B2B2B}
-.fb.s0{background:#E3F4EA;color:#1D6B3F}.fb.s1{background:#FFF1DC;color:#8A5300}.fb.s2,.fb.s3{background:#ECECEC;color:#6A6A6A}.fb.w{background:#FDE7E5;color:#A4271C}
+.fb{display:inline-block;font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:999px;background:#EDEDED;color:#2B2B2B}
+.fb.s0{background:#E3F4EA;color:#1D6B3F}.fb.s1{background:#FFF1DC;color:#8A5300}.fb.s2,.fb.s3{background:#ECECEC;color:#6A6A6A}
 .fb.o{background:none;border:1px solid var(--line);font-weight:500}
 .fx{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;font:inherit;cursor:pointer;color:var(--ink)}
 .fx:hover{background:#F4F4F4}
-.fids{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
-.fids span{display:flex;flex-direction:column;background:#fff;border-radius:14px;padding:8px 14px;box-shadow:var(--frame,0 1px 3px rgba(0,0,0,.08))}
-.fids small{font-size:.72rem;color:var(--mute)}
-.fids code{font:600 .9rem "Inter Tight",ui-monospace,monospace;color:var(--ink);user-select:all}
 .ftabs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0 0}
-.ftabs small{color:var(--mute);margin-right:4px;font-size:.8rem}
+.ftabs small{color:#3A3A3A;margin-right:4px;font-size:.8rem;background:rgba(255,255,255,.88);padding:4px 10px;border-radius:999px}
 .ftabs button{font:inherit;font-size:.82rem;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ftabs button[aria-selected="true"]{background:#0E0E0E;border-color:#0E0E0E;color:#fff}
-.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
-.fgrid .card h3{margin:0 0 10px;font-size:1rem}
-.fgrid dl{margin:0;display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:7px 14px;font-size:.88rem}
-.fgrid dt{color:var(--mute)}.fgrid dd{margin:0;word-break:break-word}
-.fbig{margin:0 0 10px;color:var(--mute);font-size:.85rem}.fbig b{font:700 1.7rem "Inter Tight",sans-serif;color:var(--ink);letter-spacing:-.03em;margin-right:4px}
-.fbr{display:grid;grid-template-columns:minmax(118px,38%) 1fr auto;gap:10px;align-items:center;font-size:.84rem;padding:3px 0}
-.fbr span{color:var(--mute)}.fbr b{font-weight:600;font-variant-numeric:tabular-nums;min-width:64px;text-align:right}.fbr b small{color:var(--mute);font-weight:400}
-.ftk{height:8px;background:#F0F0F0;border-radius:99px;overflow:hidden}.ftk i{display:block;height:100%;background:#0E0E0E;border-radius:99px}
-.fkv{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);margin-top:10px;padding-top:10px;font-size:.86rem}.fkv span{color:var(--mute)}.fkv small{color:var(--mute);font-weight:400}
-.fsh{margin-top:10px;font-size:.84rem}.fsh span{color:var(--mute)}.fsh small{color:var(--mute)}
-.fst{height:10px;background:#C9C9C9;border-radius:99px;overflow:hidden;margin:6px 0 4px}.fst i{display:block;height:100%;background:#0E0E0E}
-.fnote,.ffoot{font-size:.76rem;color:var(--mute);margin:10px 0 0}
-.ffoot{display:inline-block;margin:12px 0 0;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.88);color:#3A3A3A}
+.fdet .fcard{margin-top:12px;padding:6px 22px}
+.fdet .fcard::before,.fdet .fcard h3{display:none}
+.ff{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:28px}
+.fi{padding:14px 0;border-bottom:1px solid var(--line);min-width:0}
+.fi.w{grid-column:1/-1}
+.ff>.fi:last-child,.ff>.fi:nth-last-child(2):not(.w),.ff>.fi:nth-last-child(3):not(.w){border-bottom:0}
+.fi small{display:block;font-size:.76rem;color:var(--mute);margin-bottom:3px}
+.fi span{font-size:.95rem;color:var(--ink);word-break:break-word;line-height:1.5}
+.fi em{font-style:normal;color:#A0A0A0}
+.ffoot{display:inline-block;margin:12px 0 0;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.88);color:#3A3A3A;font-size:.76rem}
 .fnone{color:#3A3A3A;font-size:.88rem;margin:12px 0 0;background:#fff;border-radius:16px;padding:14px 18px}
-.card .fnone{background:none;padding:0;margin:0;color:var(--mute)}
 .fgo{margin-top:10px;width:100%;font:inherit;font-weight:600;padding:9px;border-radius:10px;border:1px solid #0E0E0E;background:#fff;color:#0E0E0E;cursor:pointer}
-@media (max-width:860px){.fgrid{grid-template-columns:1fr}.fdet{padding:0 10px}.fdet h2{font-size:1.25rem}.fdet>.fhd{padding:16px}
-  .fbr{grid-template-columns:minmax(96px,40%) 1fr auto}}
+@media (max-width:860px){.ff{grid-template-columns:1fr}.fi{border-bottom:1px solid var(--line)!important}.ff>.fi:last-child{border-bottom:0!important}
+  .fdet{padding:0 10px}.fdet h2{font-size:1.2rem}.fdet>.fhd{padding:16px}.fdet .fcard{padding:4px 16px}}
 </style>
 </head>
 <body>
@@ -709,15 +702,16 @@ function render(prev){
 }
 function stSel(cur){return '<select class="tn" id="ss">'+STN.map(function(n,k){return'<option value="'+k+'"'+(k===cur?" selected":"")+'>'+n+'</option>'}).join('')+'</select>'}
 function panel(){panel0();fdet();
+  var k1=Object.keys(sel);if(k1.length===1){var q1=k1[0].split("_");pfac(+q1[0],+q1[1])}
   var ks=Object.keys(sel);if(ks.length===1&&ffactories(+ks[0].split("_")[0],+ks[0].split("_")[1]).length){var dl=$("panel").querySelector("dl");
-    if(dl){dl.insertAdjacentHTML("afterend",'<button class="fgo" id="fgo">ดูข้อมูลโรงงานแบบเต็ม ↓</button>');$("fgo").onclick=function(){$("fdet").scrollIntoView({behavior:"smooth",block:"start"})}}}}
+    if(dl){dl.insertAdjacentHTML("afterend",'<button class="fgo" id="fgo">ดูรายละเอียดโรงงาน ↓</button>');$("fgo").onclick=function(){$("fdet").scrollIntoView({behavior:"smooth",block:"start"})}}}}
 function panel0(){
   var a=$("panel"),keys=Object.keys(sel),h;$("sheet").classList.toggle("has",keys.length>0);
   if(!keys.length){a.innerHTML='<p class="empty">เลือกแปลงบนแผนที่เพื่อดูรายละเอียด</p><p class="note">กด Shift ค้างเพื่อเลือกหลายแปลง (มือถือ: กดปุ่ม “เลือกหลายแปลง”) ชื่อบริษัทและสถานะที่แก้ไขในหน้านี้เก็บไว้ในเบราว์เซอร์ของคุณเท่านั้น ไม่ได้แก้ไฟล์ข้อมูลต้นฉบับ มุมขวาบนของแผนที่ใช้สลับภาพดาวเทียม/แผนที่ถนน</p>';return}
   var ids=keys.map(function(k){var s=k.split("_");return[+s[0],+s[1]]});
   var anyF=ids.some(function(x){return lay(x[0],x[1])===1}),e0=ids[0][0],i0=ids[0][1],single=ids.length===1;
   if(single){var l=has(e0,i0),d=EST[e0].p[i0],f=lay(e0,i0)===1;
-    h='<h2>แปลง '+esc(d[2]||"ไม่มีรหัส")+'</h2><span class="badge '+kind(e0,i0)+'">'+(l?(pend(e0,i0)?"มีผู้ประกอบการแล้ว · รอเชื่อมข้อมูล":"มีบริษัทแล้ว"):rent(e0,i0)?"ยังไม่มีบริษัท · แปลงว่าง":"พื้นที่ส่วนกลาง · ไม่นับเป็นแปลงว่าง")+'</span> <span class="badge g">'+(f?STN[st(e0,i0)]:"ผัง")+'</span><dl><dt>นิคม</dt><dd>'+esc(EST[e0].n)+'</dd><dt>ชั้นข้อมูล</dt><dd>'+(f?"โรงงาน":"ผัง")+'</dd><dt>พื้นที่</dt><dd>'+(d[0]/1600).toFixed(2)+' ไร่ ('+d[0].toLocaleString()+' ตร.ม.)</dd><dt>บริษัท</dt><dd>'+(l?esc(co(e0,i0)||"ยังไม่ได้เชื่อมข้อมูลจากระบบเดิม"):"–")+'</dd>'+(CIDM[K(e0,i0)]?'<dt>CID</dt><dd>'+esc(CIDM[K(e0,i0)])+'</dd>':'')+''+(d[5]?'<dt>รหัสกิจการ</dt><dd>'+esc(d[5])+'</dd>':'')+(d[10]>=0?'<dt>กลุ่มอุตสาหกรรม</dt><dd>'+esc(IG[d[10]])+'</dd>':'')+(d[11]?'<dt>ประกอบกิจการ</dt><dd>'+esc(d[11])+'</dd>':'')+(d[12]?'<dt>เลขโรงงาน 14 หลัก</dt><dd>'+esc(d[12])+'</dd>':'')+(d[13]?'<dt>เลขนิติบุคคล</dt><dd>'+esc(d[13])+'</dd>':'')+'</dl><label for="tn">ชื่อบริษัท</label><input class="tn" id="tn" value="'+esc(co(e0,i0))+'" placeholder="พิมพ์ชื่อบริษัท"><button class="act l" id="sv">บันทึกชื่อบริษัท</button>'}
+    h='<h2>ข้อมูลทั่วไป</h2><span class="badge '+kind(e0,i0)+'">'+(l?(pend(e0,i0)?"มีผู้ประกอบการแล้ว · รอเชื่อมข้อมูล":"มีบริษัทแล้ว"):rent(e0,i0)?"ยังไม่มีบริษัท · แปลงว่าง":"พื้นที่ส่วนกลาง · ไม่นับเป็นแปลงว่าง")+'</span> <span class="badge g">'+(f?STN[st(e0,i0)]:"ผัง")+'</span><dl><dt>แปลงที่ดิน</dt><dd>'+esc(d[2]||"ไม่มีรหัส")+'</dd><dt>CID</dt><dd>'+esc(CIDM[K(e0,i0)]||d[15]||"–")+'</dd><dt>นิคม (IEAT)</dt><dd>'+esc(EST[e0].n)+'</dd><dt>ชื่อผู้ประกอบการ</dt><dd>'+(l?esc(co(e0,i0)||"ยังไม่ได้เชื่อมข้อมูลจากระบบเดิม"):"–")+'</dd>'+(f?'<dt>รหัสโรงงาน</dt><dd id="pfac">…</dd>':'')+'</dl><label for="tn">ชื่อบริษัท</label><input class="tn" id="tn" value="'+esc(co(e0,i0))+'" placeholder="พิมพ์ชื่อบริษัท"><button class="act l" id="sv">บันทึกชื่อบริษัท</button>'}
   else{var ar=0,es={};ids.forEach(function(x){ar+=EST[x[0]].p[x[1]][0];es[x[0]]=1});
     h='<h2>เลือก '+ids.length+' แปลง</h2><dl><dt>พื้นที่รวม</dt><dd>'+fmt(ar/1600,1)+' ไร่ (นับซ้ำถ้าแปลงซ้อนกัน)</dd><dt>จำนวนนิคม</dt><dd>'+Object.keys(es).length+'</dd></dl><label for="tn">ชื่อบริษัท (ใส่ให้ทุกแปลงที่เลือก)</label><input class="tn" id="tn" placeholder="พิมพ์ชื่อบริษัท"><button class="act l" id="sv">บันทึกชื่อบริษัท</button>'}
   h+='<button class="act v" id="cl">ลบชื่อบริษัท (เป็นแปลงที่ยังไม่มีบริษัท)</button>';
@@ -739,58 +733,50 @@ function panel0(){
 }
 
 /* ---------- factory details under the map (data/factories/<estate>.json, loaded on first click per estate) ---------- */
-var FDV="582801321a",FDC={},FDR={},FDK=[],ftab={};
+var FDV="9f7a37d023",FDC={},FDR={},FDK=[],ftab={};
 function fload(e){if(!FDC[e])FDC[e]=fetch("data/factories/"+e+".json?v="+FDV).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})
   .then(function(j){FDK=j.k;FDR[e]=j.r;return j.r}).catch(function(err){delete FDC[e];throw err});return FDC[e]}
 function fv(row,k){var x=FDK.indexOf(k);return !row||x<0||row[x]==null?null:row[x]}
 function fnum(v){return v==null?"–":fmt(v,v%1?2:0)}
-function frow(lbl,v){return v==null||v===""?"":'<dt>'+lbl+'</dt><dd>'+esc(v)+'</dd>'}
-function fbars(items,unit){var tot=0,mx=0;items.forEach(function(x){var v=x[1]||0;tot+=v;if(v>mx)mx=v});
-  if(!tot)return'<p class="fnone">ไม่มีข้อมูลในระบบ e-PP</p>';
-  return items.map(function(x){var v=x[1]||0;return'<div class="fbr"><span>'+x[0]+'</span><div class="ftk"><i style="width:'+(mx?v/mx*100:0)+'%"></i></div><b>'+fnum(x[1])+(unit?' <small>'+unit+'</small>':'')+'</b></div>'}).join('')}
 function ffactories(e,i){var d=EST[e].p[i],r=[];if(lay(e,i))r.push(i);
   for(var q=0;q<d[7].length;q+=2)if(lay(e,d[7][q]))r.push(d[7][q]);return r}
+/* left panel: fill รหัสโรงงาน once the estate's factory file is in */
+function pfac(e,i){var el=$("pfac");if(!el)return;var put=function(){var x=$("pfac");if(x)x.textContent=fv((FDR[e]||{})[EST[e].p[i][14]],"fac")||"–"};
+  if(FDR[e])put();else fload(e).then(put,function(){var x=$("pfac");if(x)x.textContent="–"})}
 function fdet(){
   var box=$("fdet"),keys=Object.keys(sel);
   if(keys.length!==1){box.hidden=true;box.innerHTML="";return}
   var s=keys[0].split("_"),e=+s[0],i=+s[1],d=EST[e].p[i],fs=ffactories(e,i);
   box.hidden=false;
   var cur=ftab[keys[0]];if(fs.indexOf(cur)<0)cur=fs[0];
-  var head='<div class="fhd"><div><p class="fey">'+(lay(e,i)?'ข้อมูลโรงงาน':'แปลงผัง '+esc(d[2]||"ไม่มีรหัส"))+' · '+esc(EST[e].n)+'</p>';
-  if(cur==null){box.innerHTML=head+'<h2>ยังไม่มีโรงงานบนแปลงนี้</h2></div><button class="fx" id="fxc" aria-label="ปิด">✕</button></div>'+
-    '<p class="fnone">แปลงผังนี้ไม่มีแปลงโรงงานซ้อนทับอยู่ ('+(d[6]>=0?esc(LU[d[6]]):"ไม่ระบุการใช้ที่ดิน")+' · '+fmt(d[0]/1600,2)+' ไร่)</p>';fbind(box);return}
+  var head='<div class="fhd"><div><p class="fey">'+(lay(e,i)?'รายละเอียดโรงงาน':'แปลงผัง '+esc(d[2]||"ไม่มีรหัส"))+' · '+esc(EST[e].n)+'</p>';
+  var close='<button class="fx" id="fxc" aria-label="ปิดรายละเอียด">✕</button></div>';
+  if(cur==null){box.innerHTML=head+'<h2>ยังไม่มีโรงงานบนแปลงนี้</h2></div>'+close+
+    '<div class="card fcard"><div class="ff"><div class="fi"><small>พื้นที่</small><span>'+fmt(d[0]/1600,2)+' ไร่ · '+fmt(d[0])+' ตร.ม.</span></div>'+
+    '<div class="fi"><small>การใช้ที่ดิน</small><span>'+(d[6]>=0?esc(LU[d[6]]):"–")+'</span></div></div></div>';fbind(box);return}
   var draw=function(row){
-    var c=EST[e].p[cur],k=K(e,cur),nm=co(e,cur),cid=CIDM[k]||c[15],sx=st(e,cur);
-    var h=head+'<h2>'+esc(nm||(cid?"มีผู้ประกอบการ · ยังไม่มีชื่อในระบบ":"ยังไม่มีชื่อผู้ประกอบการ"))+'</h2>';
-    h+='<div class="fbd"><span class="fb s'+sx+'">'+STN[sx]+'</span>'+(/ได้รับการส่งเสริม/.test(fv(row,"boi")||"")?'<span class="fb">BOI</span>':'')+
-      (/EIA|EHIA|IEE/.test(fv(row,"eia")||"")?'<span class="fb">'+esc(fv(row,"eia"))+'</span>':'')+(fv(row,"risk")===1?'<span class="fb w">โรงงานเสี่ยง</span>':'')+
-      '<span class="fb o">แปลง '+esc(c[2]||"ไม่มีรหัส")+'</span></div></div><button class="fx" id="fxc" aria-label="ปิดรายละเอียดโรงงาน">✕</button></div>';
-    var ids=[["CID",cid],["เลขนิติบุคคล",fv(row,"mid")||c[13]],["ทะเบียนโรงงาน",fv(row,"fac")],["เลขโรงงาน 14 หลัก",fv(row,"f14")||c[12]]].filter(function(x){return x[1]});
-    if(ids.length)h+='<div class="fids">'+ids.map(function(x){return'<span><small>'+x[0]+'</small><code>'+esc(x[1])+'</code></span>'}).join('')+'</div>';
+    var c=EST[e].p[cur],nm=co(e,cur);
+    var h=head+'<h2>'+esc(nm||((CIDM[K(e,cur)]||c[15])?"มีผู้ประกอบการ · ยังไม่มีชื่อในระบบ":"ยังไม่มีชื่อผู้ประกอบการ"))+'</h2>'+
+      '<div class="fbd"><span class="fb o">แปลง '+esc(c[2]||"ไม่มีรหัส")+'</span></div></div>'+close;
     if(fs.length>1)h+='<div class="ftabs" role="tablist" aria-label="โรงงานบนแปลงเดียวกัน"><small>โรงงานบนแปลงเดียวกัน '+fs.length+' แห่ง</small>'+fs.map(function(j){
       return'<button role="tab" aria-selected="'+(j===cur)+'" data-fj="'+j+'">'+esc((co(e,j)||"ยังไม่มีชื่อ").slice(0,38))+'</button>'}).join('')+'</div>';
-    var filled=row?FDK.filter(function(k){return k!=="act"&&k!=="stx"&&fv(row,k)!=null}).length:0;
-    if(!filled){h+='<p class="fnone">ไม่มีรายละเอียดโรงงานจากระบบ e-PP สำหรับแปลงนี้'+(row&&fv(row,"act")===0?' (ไม่ active ในระบบ)':'')+(c[11]?' · ประกอบกิจการ: '+esc(c[11]):'')+'</p>';box.innerHTML=h;fbind(box);return}
-    var rai=[fv(row,"rai"),fv(row,"ngan"),fv(row,"wa")],hr=[["ผู้บริหารและช่างเทคนิค",fv(row,"hExec")],["ชายมีฝีมือ",fv(row,"hMs")],["หญิงมีฝีมือ",fv(row,"hFs")],
-      ["ชายไม่มีฝีมือ",fv(row,"hMu")],["หญิงไม่มีฝีมือ",fv(row,"hFu")],["ช่างเทคนิคต่างชาติ",fv(row,"hFt")]],ht=0,hk=0;
-    hr.forEach(function(x){if(x[1]!=null){ht+=x[1];hk++}});
-    var inv=[["ที่ดิน",fv(row,"iLand")],["สิ่งก่อสร้าง / อาคาร",fv(row,"iBld")],["เครื่องจักรและอุปกรณ์",fv(row,"iMac")],["สินทรัพย์อื่น ๆ",fv(row,"iOth")],["สินทรัพย์หมุนเวียน",fv(row,"iCur")]],it=0,ik=0;
-    inv.forEach(function(x){if(x[1]!=null){it+=x[1];ik++}});
-    var th=fv(row,"thai"),fr=fv(row,"frgn");
-    h+='<div class="fgrid">'+
-      (function(){var x=frow("กลุ่มอุตสาหกรรม",fv(row,"grp"))+frow("ลำดับประเภทโรงงาน",fv(row,"typ"))+frow("ประกอบกิจการ",fv(row,"work"))+
-        frow("สัญชาติผู้ประกอบการ",fv(row,"nat"))+frow("การส่งเสริมการลงทุน",fv(row,"boi"))+frow("รายงานสิ่งแวดล้อม",fv(row,"eia"))+frow("สถานะในระบบ e-PP",fv(row,"stx"));
-        return x?'<div class="card"><h3>กิจการ</h3><dl>'+x+'</dl></div>':''})()+
-      '<div class="card"><h3>ที่ตั้งและที่ดิน</h3><dl>'+frow("ที่ตั้งโรงงาน",fv(row,"addr"))+frow("การได้มาซึ่งที่ดิน",fv(row,"land")||fv(row,"own"))+frow("เลขที่สัญญา",fv(row,"con"))+
-        '<dt>พื้นที่แปลง (แผนที่)</dt><dd>'+fmt(c[0]/1600,2)+' ไร่ · '+fmt(c[0])+' ตร.ม.</dd>'+
-        (rai[0]!=null?'<dt>ขนาดตามข้อมูลแปลง</dt><dd>'+fnum(rai[0])+' ไร่ '+fnum(rai[1])+' งาน '+fnum(rai[2])+' ตร.วา</dd>':'')+
-        (fv(row,"farea")!=null?'<dt>พื้นที่โรงงาน</dt><dd>'+fnum(fv(row,"farea"))+' ตร.ม.</dd>':'')+'</dl></div>'+
-      '<div class="card"><h3>แรงงาน</h3>'+(hk?'<p class="fbig"><b>'+fmt(ht)+'</b> คน</p>':'')+fbars(hr,"คน")+'</div>'+
-      '<div class="card"><h3>การลงทุนและเครื่องจักร</h3>'+(ik?'<p class="fbig"><b>'+fnum(Math.round(it*100)/100)+'</b> มูลค่ารวม</p>':'')+fbars(inv,"")+
-        (fv(row,"hp")!=null?'<div class="fkv"><span>กำลังเครื่องจักร</span><b>'+fnum(fv(row,"hp"))+' <small>แรงม้า / กิโลวัตต์</small></b></div>':'')+
-        (th!=null||fr!=null?'<div class="fsh"><span>สัดส่วนหุ้น</span><div class="fst"><i style="width:'+(th||0)+'%"></i></div><small>ไทย '+fnum(th||0)+'% · ต่างชาติ '+fnum(fr||0)+'%</small></div>':'')+
-        '<p class="fnote">หน่วยมูลค่าตามที่บันทึกในระบบ e-PP</p></div>'+
-      '</div><p class="ffoot">ข้อมูลจากระบบ e-PP'+(fv(row,"imp")?' · นำเข้า GIS '+esc(fv(row,"imp")):'')+(fv(row,"act")===0?' · ไม่ active ในระบบ':'')+' · OBJECTID '+c[14]+'</p>';
+    var area=fmt(c[0]/1600,2)+' ไร่ · '+fmt(c[0])+' ตร.ม. (ตามรูปแปลง)';
+    if(fv(row,"rai")!=null)area+='<br>'+fnum(fv(row,"rai"))+' ไร่ '+fnum(fv(row,"ngan"))+' งาน '+fnum(fv(row,"wa"))+' ตร.วา (ข้อมูลแปลง)';
+    if(fv(row,"farea")!=null)area+='<br>พื้นที่โรงงาน '+fnum(fv(row,"farea"))+' ตร.ม.';
+    var F=function(lbl,v,cls){return'<div class="fi'+(cls?" "+cls:"")+'"><small>'+lbl+'</small><span>'+(v==null||v===""?'<em>–</em>':v)+'</span></div>'},
+        T=function(k){var v=fv(row,k);return v==null?null:esc(v)};
+    var sx=fv(row,"stx");
+    h+='<div class="card fcard"><div class="ff">'+
+      F("พื้นที่",area)+
+      F("สถานะประกอบกิจการ",sx?'<span class="fb '+({"เป็นโรงงานที่มีการแจ้งเริ่มกิจการแล้ว":"s0","เป็นโรงงานยังไม่แจ้งเริ่ม":"s1","หยุดประกอบกิจการ":"s2","เลิกกิจการ":"s3"}[sx]||"")+'">'+esc(sx)+'</span>':null)+
+      F("การได้มาซึ่งที่ดิน",T("land"))+
+      F("ที่ตั้งโรงงาน",T("addr"),"w")+
+      F("ประเภทการประกอบกิจการ",T("work"),"w")+
+      F("ประเภทโรงงาน",T("ftype"),"w")+
+      F("รหัสประเภทโรงงาน",T("typ"))+
+      F("รหัสประจำตัวการค้า",T("mid")||(c[13]?esc(c[13]):null))+
+      F("ประเภทเจ้าของกิจการ",T("own"))+
+      '</div></div><p class="ffoot">ข้อมูลจากระบบ e-PP'+(fv(row,"imp")?' · นำเข้า GIS '+esc(fv(row,"imp")):'')+(row&&fv(row,"act")===0?' · ไม่ active ในระบบ':'')+' · OBJECTID '+c[14]+'</p>';
     box.innerHTML=h;fbind(box)};
   if(FDR[e])draw(FDR[e][EST[e].p[cur][14]]);
   else{box.innerHTML=head+'<h2>กำลังโหลดข้อมูลโรงงาน…</h2></div></div>';

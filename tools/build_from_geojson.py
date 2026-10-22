@@ -170,9 +170,8 @@ if REPORT:
     print('report ->', REPORT)
 
 # ---- factory details (data/factories/<e>.json): one row per factory parcel on the map, keyed by OBJECTID
-FD_KEYS = ['mid', 'fac', 'f14', 'grp', 'typ', 'work', 'nat', 'boi', 'eia', 'risk', 'own', 'land', 'con',
-           'farea', 'rai', 'ngan', 'wa', 'addr', 'hp', 'iLand', 'iBld', 'iMac', 'iOth', 'iCur', 'thai', 'frgn',
-           'hExec', 'hMs', 'hFs', 'hMu', 'hFu', 'hFt', 'imp', 'act', 'stx']
+FD_KEYS = ['mid', 'fac', 'typ', 'ftype', 'work', 'land', 'own', 'addr', 'farea', 'rai', 'ngan', 'wa',
+           'stx', 'imp', 'act']
 
 
 def num(v):
@@ -214,24 +213,13 @@ for e, name in enumerate(est_names):
         p = f['properties']
         if txt(p['Measter_Plan']) != 'โรงงาน':
             continue
-        row = [txt(p.get('mercant_id')), txt(p.get('FactoryID')), txt(p.get('fid14n')),
-               txt(p.get('industrial_group_desc')), txt(p.get('factory_type_no')),
+        row = [txt(p.get('mercant_id')), txt(p.get('FactoryID')), txt(p.get('factory_type_no')),
+               txt(p.get('factory_work_desc')),
                txt(p.get('factory_work_desc_long')) or txt(p.get('factory_work_desc')),
-               '' if txt(p.get('NationalityFactory')) == 'ไม่พบข้อมูล' else txt(p.get('NationalityFactory')),
-               txt(p.get('boi')), txt(p.get('type_eia_ehia')), num(p.get('risk_factory12')),
-               txt(p.get('OwnerType')), txt(p.get('LandAcquisition')),
-               '' if txt(p.get('ContractNumber')) == '0' else txt(p.get('ContractNumber')),
+               txt(p.get('LandAcquisition')), txt(p.get('OwnerType')), addr(p),
                num(p.get('factory_area_sqmeter')), num(p.get('RAI')), num(p.get('NGAN')), num(p.get('WA')),
-               addr(p), num(p.get('HoursePowerWatt')),
-               num(p.get('InvestmentLandSum')), num(p.get('InvestmentBuildingConstructionSum')),
-               num(p.get('InvestmentMachineEquipmentSum')), num(p.get('InvestmentOtherAsset')),
-               num(p.get('InvestmentCurrentAsset')), num(p.get('InvestmentThaiStockPercent')),
-               num(p.get('InvestmentForeignStockPercent')),
-               num(p.get('HrExecuiveTechnicianSum')), num(p.get('HrMaleWorkersSkillSum')),
-               num(p.get('HrFemaleWorkersSkillSum')), num(p.get('HrMaleWorkersUnskillSum')),
-               num(p.get('HrFemaleWorkersUnskillSum')), num(p.get('HrForeignTechnicianSum')),
-               imp_date(p.get('import_date')), 1 if txt(p.get('Active')).lower() == 'true' else 0,
-               txt(p.get('cancel_production_status'))]
+               txt(p.get('cancel_production_status')), imp_date(p.get('import_date')),
+               1 if txt(p.get('Active')).lower() == 'true' else 0]
         while row and row[-1] in ('', None):
             row.pop()
         FD[e][o] = [None if v == '' else v for v in row]
