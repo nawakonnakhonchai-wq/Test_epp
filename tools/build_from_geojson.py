@@ -89,6 +89,36 @@ def idx(lst, v):
 
 
 est_names = [E['n'] for E in OLD if E['n'] in by_est] + sorted(n for n in by_est if n not in old_order)
+# ---- dashboard stats per factory parcel: d[16] = [nat, boi, eia, land, risk, [hr x6] or 0]
+FX = {'nat': [], 'boi': [], 'eia': [], 'land': ['ซื้อ / รับโอนกรรมสิทธิ์', 'เช่า / รับโอนสิทธิการเช่า',
+                                               'ได้รับความยินยอมจากเจ้าของ', 'อื่น ๆ']}
+HR = ['HrExecuiveTechnicianSum', 'HrMaleWorkersSkillSum', 'HrFemaleWorkersSkillSum',
+      'HrMaleWorkersUnskillSum', 'HrFemaleWorkersUnskillSum', 'HrForeignTechnicianSum']
+
+
+def land_group(v):
+    if not v:
+        return -1
+    if 'ยินยอม' in v:
+        return 2
+    if 'เช่า' in v:
+        return 1
+    if 'ซื้อ' in v or 'กรรมสิทธิ์' in v:
+        return 0
+    return 3
+
+
+def stat_row(p):
+    nat = txt(p.get('NationalityFactory'))
+    eia = txt(p.get('type_eia_ehia'))
+    hr = [p.get(k) for k in HR]
+    risk = p.get('risk_factory12')
+    return [idx(FX['nat'], '' if nat == 'ไม่พบข้อมูล' else nat), idx(FX['boi'], txt(p.get('boi'))),
+            idx(FX['eia'], eia), land_group(txt(p.get('LandAcquisition')) or txt(p.get('OwnerType'))),
+            -1 if risk is None else int(risk),
+            [int(v or 0) for v in hr] if any(v is not None for v in hr) else 0]
+
+
 EST, stats = [], Counter()
 for name in est_names:
     fs = by_est[name]
@@ -129,6 +159,8 @@ for name in est_names:
                   STATUS.get(txt(p.get('cancel_production_status')), 4) if plan else -1, plan,
                   idx(IG, txt(p.get('industrial_group_desc'))), txt(p.get('factory_work_desc')),
                   txt(p.get('fid14n')), txt(p.get('mercant_id')), o, c])
+        if plan:
+            P[-1].append(stat_row(p))
         if o not in old_by_oid:
             stats['new_parcels'] += 1
     # overlaps (>= 20% of the smaller parcel), symmetric, largest share first
@@ -231,6 +263,7 @@ print(f"factory details rows={sum(len(r) for r in FD.values())} files={len(fd_fi
 if WRITE:
     dump = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
     out = html[:i0] + dump(EST) + html[i1:j0] + dump(LU) + html[j1:k0] + dump(IG) + html[k1:]
+    out = re.sub(r'var FX=\{[^\n]*?\};', lambda m: 'var FX=' + dump(FX) + ';', out, count=1)
     fd_dir = os.path.join(os.path.dirname(os.path.abspath(html_path)), 'data', 'factories')
     os.makedirs(fd_dir, exist_ok=True)
     for fn in os.listdir(fd_dir):
