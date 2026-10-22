@@ -440,6 +440,7 @@ html.authed .gate{display:none}
 @media (prefers-reduced-motion:reduce){.gate-card.shake{animation:none}}
 @media (max-width:420px){.gate-card{padding:24px 20px 20px}}
 .hs .acct{justify-content:center;gap:2px}
+.hs small{font-size:.7rem;opacity:.85;white-space:nowrap}
 .acct .who{font-size:.95rem;font-weight:700;color:var(--ink);line-height:1.2}
 .acct button{font:inherit;font-size:.76rem;color:var(--mute);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .acct button:hover{color:var(--ink)}
@@ -470,8 +471,8 @@ html.authed .gate{display:none}
 </div>
 <header>
   <div class="hero"><div class="logo" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg></div>
-  <div class="ht"><h1>ข้อมูลผู้ประกอบการภายในนิคมฯ จากระบบ e-PP</h1><div class="sub">แผนที่ผังแปลงและข้อมูลโรงงานในนิคมอุตสาหกรรม</div></div>
-  <div class="hs"><span><b id="hn">–</b>นิคม</span><span><b id="hp">–</b>แปลง</span><span><b id="hc">–</b>มีผู้ประกอบการ</span><span class="acct"><strong class="who" id="who">–</strong><button type="button" id="logout">ออกจากระบบ</button></span></div></div>
+  <div class="ht"><h1>ข้อมูลผู้ประกอบการภายในนิคมฯ <span style="white-space:nowrap">จากระบบ e-PP</span></h1><div class="sub">แผนที่ผังแปลงและข้อมูลโรงงานในนิคมอุตสาหกรรม</div></div>
+  <div class="hs"><span><b id="hn">–</b>นิคม</span><span><b id="hp">–</b>แปลงทั้งหมด<small id="hps1"></small><small id="hps2"></small></span><span><b id="hc">–</b>มีผู้ประกอบการ<small>โรงงานที่มี CID</small></span><span class="acct"><strong class="who" id="who">–</strong><button type="button" id="logout">ออกจากระบบ</button></span></div></div>
   <p>เลือกนิคมได้หลายแห่งหรือทุกแห่งพร้อมกัน · สีม่วงอ่อนคือแปลงที่มีผู้ประกอบการแล้ว (มีชื่อบริษัท หรือมี CID ที่เช่า/ซื้อแล้วแต่ยังไม่เชื่อมข้อมูล) สีส้มอ่อนคือแปลงว่างในพื้นที่อุตสาหกรรม สีเทาคือพื้นที่ส่วนกลาง (พื้นที่สีเขียว สำนักงาน สาธารณูปโภค พาณิชยกรรม) ซึ่งไม่นับเป็นแปลงว่าง · คลิกป้ายชื่อนิคมเพื่อซูมเข้า · ซูมใกล้ๆ เพื่อดูชื่อบริษัทบนแปลง · เส้นประสีเทาคือโรงงานที่เลิก/หยุดกิจการ สีจางคือแปลงผัง · ใช้ปุ่ม “ตัวกรอง” เลือกชั้นข้อมูล สถานะ และแปลงที่ซ้อนทับ</p>
 </header>
 <div class="bar">
@@ -573,7 +574,8 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;
 function fmt(n,d){return n.toLocaleString("th-TH",{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
 function V(){var a=[];for(var e=0;e<EST.length;e++)if(vis[e])a.push(e);return a}
 $("pkt").textContent=EST.length;
-function hdr(){var n=0,c=0;EST.forEach(function(E,e){n+=E.p.length;E.p.forEach(function(d,i){if(has(e,i))c++})});$("hn").textContent=fmt(EST.length);$("hp").textContent=fmt(n);$("hc").textContent=fmt(c)}hdr();
+/* Header: แปลงทั้งหมด = ผัง + โรงงาน of every estate; มีผู้ประกอบการ = rows carrying a CID (file or live ArcGIS). */
+function hdr(){var np=0,nf=0,c=0;EST.forEach(function(E,e){E.p.forEach(function(d,i){if(d[9])nf++;else np++;if(CIDM[K(e,i)])c++})});$("hn").textContent=fmt(EST.length);$("hp").textContent=fmt(np+nf);$("hps1").textContent="ผัง "+fmt(np);$("hps2").textContent="โรงงาน "+fmt(nf);$("hc").textContent=fmt(c)}hdr();
 
 var map=L.map("map",{preferCanvas:true,zoomSnap:.25,maxZoom:20,minZoom:5});
 var osm=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"});
@@ -725,7 +727,7 @@ function dash(){
   var title=(vs.length===1?EST[vs[0]].n:vs.length===EST.length?"ทุกนิคม ("+EST.length+" แห่ง)":vs.length+" นิคมที่เลือก")+(fa?" · กรองแล้ว":"");
   var h='<h2>ภาพรวม: '+esc(title)+'</h2><p>นับจากชื่อบริษัทในไฟล์ข้อมูล รวมชื่อที่แก้ไขในหน้านี้ และแปลงที่มี CID (เช่า/ซื้อแล้ว รอเชื่อมข้อมูล) · พื้นที่คำนวณจากรูปร่างแปลง 1 ไร่ = 1,600 ตร.ม.</p>';
   h+='<div class="kpis">'+
-   '<div class="kpi"><span>แปลงทั้งหมด</span><b>'+fmt(n)+'</b><small>'+(vs.length===1?'อันดับ '+ranks()[vs[0]]+' จาก '+EST.length+' นิคมในไฟล์ (ตามพื้นที่)':'จาก '+vs.length+' นิคม')+'</small></div>'+
+   '<div class="kpi"><span>แปลงทั้งหมด</span><b>'+fmt(n)+'</b><small>ผัง '+fmt(np)+' · โรงงาน '+fmt(nf)+'</small><small>'+(vs.length===1?'อันดับ '+ranks()[vs[0]]+' จาก '+EST.length+' นิคมในไฟล์ (ตามพื้นที่)':'จาก '+vs.length+' นิคม')+'</small></div>'+
    '<div class="kpi"><span>พื้นที่รวมของแปลง (ไร่)</span><b>'+fmt(tot/1600)+'</b><small>เฉลี่ย '+fmt(n?tot/1600/n:0,1)+' ไร่ต่อแปลง</small><small>'+(fa?'นับซ้ำส่วนที่ซ้อนกัน':'พื้นที่จริงไม่นับซ้ำ '+fmt(uasum/1600)+' ไร่')+'</small></div>'+
    '<div class="kpi"><span>แปลงที่มีบริษัท</span><b>'+fmt(cn)+'</b><small>'+pct(cn,n)+'% ของแปลงทั้งหมด</small></div>'+
    '<div class="kpi"><span>พื้นที่ที่มีบริษัท (ไร่)</span><b>'+fmt(ca/1600)+'</b><small>'+pct(ca,tot)+'% ของพื้นที่รวม</small></div>'+
